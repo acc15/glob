@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public class TreeScanner implements PathScanner {
+class TreeScanner implements PathScanner {
     @Override
     public void findMatches(Path path, Glob.Context context) {
         /*

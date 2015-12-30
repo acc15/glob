@@ -9,7 +9,7 @@ import java.nio.file.Path;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public class SegmentScanner implements PathScanner {
+class SegmentScanner implements PathScanner {
 
     private final String segment;
 

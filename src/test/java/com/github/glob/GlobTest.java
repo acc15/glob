@@ -1,7 +1,5 @@
 package com.github.glob;
 
-import com.github.glob.scan.SegmentScanner;
-import com.github.glob.scan.TreeScanner;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -11,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Set;
 
+import static com.github.glob.scan.Scanners.segment;
+import static com.github.glob.scan.Scanners.tree;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -27,9 +27,9 @@ public class GlobTest {
 
         final Glob scanner = new Glob();
 
-        scanner.addSequence(Arrays.asList(new SegmentScanner("src"), new SegmentScanner("main")));
-        scanner.addSequence(Arrays.asList(new SegmentScanner("src"), new SegmentScanner("main"), new SegmentScanner("java")));
-        scanner.addSequence(Arrays.asList(new SegmentScanner("src"), new SegmentScanner("test"), new SegmentScanner("java")));
+        scanner.addSequence(Arrays.asList(segment("src"), segment("main")));
+        scanner.addSequence(Arrays.asList(segment("src"), segment("main"), segment("java")));
+        scanner.addSequence(Arrays.asList(segment("src"), segment("test"), segment("java")));
 
         temporaryFolder.newFolder("src", "main", "java");
         temporaryFolder.newFolder("src", "test", "java");
@@ -46,7 +46,7 @@ public class GlobTest {
     public void testTreeScan() throws Exception {
         final Glob scanner = new Glob();
 
-        scanner.addSequence(Arrays.asList(new SegmentScanner("tree"), new TreeScanner()));
+        scanner.addSequence(Arrays.asList(segment("tree"), tree()));
 
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFolder("tree", "test");

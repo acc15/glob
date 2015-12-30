@@ -1,7 +1,7 @@
 package com.github.glob;
 
-import com.github.glob.scan.MatchScanner;
 import com.github.glob.scan.PathScanner;
+import com.github.glob.scan.Scanners;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -44,7 +44,7 @@ public class Glob {
             Node nextNode = nextNodes.get(matcher);
             if (nextNode != null) {
                 if (nextNode.nextNodes.isEmpty() || last) {
-                    nextNode.addNext(MatchScanner.getInstance(), false);
+                    nextNode.addNext(Scanners.match(), false);
                 }
                 return nextNode;
             }
