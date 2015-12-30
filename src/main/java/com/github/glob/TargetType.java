@@ -2,17 +2,19 @@ package com.github.glob;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Predicate;
 
 /**
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public enum TargetType {
+public enum TargetType implements Predicate<Path> {
     ANY,
     DIRECTORY,
     FILE;
 
-    public boolean matches(Path path) {
+    @Override
+    public boolean test(Path path) {
         switch (this){
             case ANY:
                 return Files.exists(path);
@@ -27,5 +29,4 @@ public enum TargetType {
                 throw new IllegalArgumentException("Unknown target type: " + this);
         }
     }
-
 }

@@ -3,8 +3,10 @@ package com.github.glob;
 import com.github.glob.scan.EmptyScanner;
 import com.github.glob.scan.PathScanner;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * @author Vyacheslav Mayorov
@@ -23,13 +25,13 @@ public class Glob {
         }
     }
 
-    public Set<Path> scan(final Path path, final TargetType target) {
+    public Set<Path> scan(final Path path, final Predicate<Path> predicate) throws IOException {
         final Set<Path> matchSet = new HashSet<>();
-        new Context(matchSet, root, target).scanNext(path);
+        new Context(matchSet, root, predicate).scanNext(path);
         return matchSet;
     }
 
-    static class Node {
+    private static class Node {
 
         final PathScanner scanner;
         final Map<PathScanner, Node> nextNodes = new HashMap<>();
@@ -61,23 +63,23 @@ public class Glob {
 
         private final Set<Path> matchedPaths;
         private final Node node;
-        private final TargetType targetType;
+        private final Predicate<Path> matchPredicate;
 
-        Context(Set<Path> matchedPaths, Node node, TargetType target) {
+        Context(Set<Path> matchedPaths, Node node, Predicate<Path> target) {
             this.matchedPaths = matchedPaths;
             this.node = node;
-            this.targetType = target;
+            this.matchPredicate = target;
         }
 
         public void scanNext(Path path) {
             if (node.nextNodes.isEmpty()) {
-                if (targetType.matches(path)) {
+                if (matchPredicate.test(path)) {
                     matchedPaths.add(path);
                 }
                 return;
             }
             for (Node next : node.nextNodes.values()) {
-                next.scanner.findMatches(path, new Context(matchedPaths, next, targetType));
+                next.scanner.findMatches(path, new Context(matchedPaths, next, matchPredicate));
             }
         }
 
