@@ -9,11 +9,11 @@ import java.nio.file.Path;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public class SimpleScanner implements PathScanner {
+public class SegmentScanner implements PathScanner {
 
     private final String segment;
 
-    public SimpleScanner(String segment) {
+    public SegmentScanner(String segment) {
         this.segment = segment;
     }
 
@@ -32,6 +32,6 @@ public class SimpleScanner implements PathScanner {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof SimpleScanner && ((SimpleScanner)obj).segment.equals(segment);
+        return obj instanceof SegmentScanner && ((SegmentScanner)obj).segment.equals(segment);
     }
 }
