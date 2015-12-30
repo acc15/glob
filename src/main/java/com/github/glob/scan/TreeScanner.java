@@ -17,8 +17,8 @@ public class TreeScanner implements PathScanner {
     public void findMatches(Path path, Glob.Context context) {
         /*
             Files.walkFileTree() is not suitable because:
-            1. it doesnt enumerates directories (only in pre/post visit)
-            2. pre/postVisitDirectory called for root directory which
+            1. it doesnt enumerates directories (only in pre/postVisitDirectory)
+            2. pre/postVisitDirectory is also called for root directory
         */
         walk(path, context);
     }
