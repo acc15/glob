@@ -1,7 +1,6 @@
-package com.github.glob.scan.scanners;
+package com.github.glob.scan;
 
-import com.github.glob.scan.PathScanner;
-import com.github.glob.scan.ScanContext;
+import com.github.glob.Glob;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,10 +19,20 @@ public class SimpleScanner implements PathScanner {
     }
 
     @Override
-    public void findMatches(Path path, ScanContext context) {
+    public void findMatches(Path path, Glob.Context context) {
         final Path resolved = path.resolve(Paths.get(segment));
         if (Files.exists(resolved)) {
             context.scanNext(resolved);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return segment.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof SimpleScanner && ((SimpleScanner)obj).segment.equals(segment);
     }
 }

@@ -1,5 +1,7 @@
 package com.github.glob.scan;
 
+import com.github.glob.Glob;
+
 import java.nio.file.Path;
 
 /**
@@ -7,5 +9,5 @@ import java.nio.file.Path;
  * @since 2015-30-12
  */
 public interface PathScanner {
-    void findMatches(Path path, ScanContext context);
+    void findMatches(Path path, Glob.Context context);
 }
