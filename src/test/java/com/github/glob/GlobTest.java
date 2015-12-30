@@ -7,9 +7,10 @@ import org.junit.rules.TemporaryFolder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
-import static com.github.glob.scan.Scanners.segment;
+import static com.github.glob.scan.Scanners.subPath;
 import static com.github.glob.scan.Scanners.tree;
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -27,9 +28,9 @@ public class GlobTest {
 
         final Glob scanner = new Glob();
 
-        scanner.addSequence(Arrays.asList(segment("src"), segment("main")));
-        scanner.addSequence(Arrays.asList(segment("src"), segment("main"), segment("java")));
-        scanner.addSequence(Arrays.asList(segment("src"), segment("test"), segment("java")));
+        scanner.addSequence(Collections.singletonList(subPath("src", "main")));
+        scanner.addSequence(Collections.singletonList(subPath("src", "main", "java")));
+        scanner.addSequence(Collections.singletonList(subPath("src", "test", "java")));
 
         temporaryFolder.newFolder("src", "main", "java");
         temporaryFolder.newFolder("src", "test", "java");
@@ -46,7 +47,7 @@ public class GlobTest {
     public void testTreeScan() throws Exception {
         final Glob scanner = new Glob();
 
-        scanner.addSequence(Arrays.asList(segment("tree"), tree()));
+        scanner.addSequence(Arrays.asList(subPath("tree"), tree()));
 
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFolder("tree", "test");

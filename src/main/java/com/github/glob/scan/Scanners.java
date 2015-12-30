@@ -1,5 +1,8 @@
 package com.github.glob.scan;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
@@ -17,8 +20,12 @@ public class Scanners {
         return MATCH;
     }
 
-    public static PathScanner segment(String segment) {
-        return new SegmentScanner(segment);
+    public static PathScanner subPath(String first, String... more) {
+        return new SubPathScanner(Paths.get(first, more));
+    }
+
+    public static PathScanner subPath(Path subPath) {
+        return new SubPathScanner(subPath);
     }
 
 }

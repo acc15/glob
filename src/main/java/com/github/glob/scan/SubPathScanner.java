@@ -9,17 +9,17 @@ import java.nio.file.Path;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-class SegmentScanner implements PathScanner {
+class SubPathScanner implements PathScanner {
 
-    private final String segment;
+    private final Path subPath;
 
-    public SegmentScanner(String segment) {
-        this.segment = segment;
+    public SubPathScanner(Path subPath) {
+        this.subPath = subPath;
     }
 
     @Override
     public void findMatches(Path path, Glob.Context context) {
-        final Path resolved = path.resolve(segment);
+        final Path resolved = path.resolve(subPath);
         if (Files.exists(resolved)) {
             context.scanNext(resolved);
         }
@@ -27,11 +27,11 @@ class SegmentScanner implements PathScanner {
 
     @Override
     public int hashCode() {
-        return segment.hashCode();
+        return subPath.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof SegmentScanner && ((SegmentScanner)obj).segment.equals(segment);
+        return obj instanceof SubPathScanner && ((SubPathScanner)obj).subPath.equals(subPath);
     }
 }
