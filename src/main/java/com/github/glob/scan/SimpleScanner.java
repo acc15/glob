@@ -4,7 +4,6 @@ import com.github.glob.Glob;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Vyacheslav Mayorov
@@ -20,7 +19,7 @@ public class SimpleScanner implements PathScanner {
 
     @Override
     public void findMatches(Path path, Glob.Context context) {
-        final Path resolved = path.resolve(Paths.get(segment));
+        final Path resolved = path.resolve(segment);
         if (Files.exists(resolved)) {
             context.scanNext(resolved);
         }

@@ -17,7 +17,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public class GlobScannerTest {
+public class GlobTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
