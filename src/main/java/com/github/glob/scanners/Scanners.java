@@ -9,22 +9,22 @@ import java.nio.file.Paths;
  */
 public class Scanners {
 
-    private static final MatchScanner MATCH = new MatchScanner();
+    private static final DummyScanner DUMMY = new DummyScanner();
     private static final TreeScanner TREE = new TreeScanner();
 
     public static Scanner tree() {
         return TREE;
     }
 
-    public static Scanner match() {
-        return MATCH;
+    public static Scanner dummy() {
+        return DUMMY;
     }
 
-    public static Scanner subPath(String first, String... more) {
+    public static Scanner path(String first, String... more) {
         return new PathScanner(Paths.get(first, more));
     }
 
-    public static Scanner subPath(Path subPath) {
+    public static Scanner path(Path subPath) {
         return new PathScanner(subPath);
     }
 

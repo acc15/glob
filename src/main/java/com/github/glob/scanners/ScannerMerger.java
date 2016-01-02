@@ -9,7 +9,7 @@ import java.util.function.Predicate;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public class Glob {
+public class ScannerMerger {
 
     private final Node root = new Node(null);
 
@@ -41,7 +41,7 @@ public class Glob {
             Node nextNode = nextNodes.get(matcher);
             if (nextNode != null) {
                 if (nextNode.nextNodes.isEmpty() || last) {
-                    nextNode.addNext(Scanners.match(), false);
+                    nextNode.addNext(Scanners.dummy(), false);
                 }
                 return nextNode;
             }

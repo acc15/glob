@@ -11,10 +11,10 @@ import java.util.function.Predicate;
 class ScanContext {
 
     private final Set<Path> matchedPaths;
-    private final Glob.Node node;
+    private final ScannerMerger.Node node;
     private final Predicate<Path> matchPredicate;
 
-    ScanContext(Set<Path> matchedPaths, Glob.Node node, Predicate<Path> target) {
+    ScanContext(Set<Path> matchedPaths, ScannerMerger.Node node, Predicate<Path> target) {
         this.matchedPaths = matchedPaths;
         this.node = node;
         this.matchPredicate = target;
@@ -27,7 +27,7 @@ class ScanContext {
             }
             return;
         }
-        for (Glob.Node next : node.nextNodes.values()) {
+        for (ScannerMerger.Node next : node.nextNodes.values()) {
             next.scanner.scan(path, new ScanContext(matchedPaths, next, matchPredicate));
         }
     }

@@ -1,6 +1,7 @@
 package com.github.glob;
 
-import com.github.glob.scanners.Glob;
+import com.github.glob.scanners.ScannerMerger;
+import com.github.glob.scanners.Scanners;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -11,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.github.glob.scanners.Scanners.subPath;
 import static com.github.glob.scanners.Scanners.tree;
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -19,7 +19,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public class GlobTest {
+public class ScannerMergerTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -27,11 +27,11 @@ public class GlobTest {
     @Test
     public void testSimpleScan() throws Exception {
 
-        final Glob scanner = new Glob();
+        final ScannerMerger scanner = new ScannerMerger();
 
-        scanner.addSequence(Collections.singletonList(subPath("src", "main")));
-        scanner.addSequence(Collections.singletonList(subPath("src", "main", "java")));
-        scanner.addSequence(Collections.singletonList(subPath("src", "test", "java")));
+        scanner.addSequence(Collections.singletonList(Scanners.path("src", "main")));
+        scanner.addSequence(Collections.singletonList(Scanners.path("src", "main", "java")));
+        scanner.addSequence(Collections.singletonList(Scanners.path("src", "test", "java")));
 
         temporaryFolder.newFolder("src", "main", "java");
         temporaryFolder.newFolder("src", "test", "java");
@@ -46,9 +46,9 @@ public class GlobTest {
 
     @Test
     public void testTreeScan() throws Exception {
-        final Glob scanner = new Glob();
+        final ScannerMerger scanner = new ScannerMerger();
 
-        scanner.addSequence(Arrays.asList(subPath("tree"), tree()));
+        scanner.addSequence(Arrays.asList(Scanners.path("tree"), tree()));
 
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFolder("tree", "test");
