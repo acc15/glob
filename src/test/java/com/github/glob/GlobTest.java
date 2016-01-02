@@ -1,5 +1,6 @@
 package com.github.glob;
 
+import com.github.glob.scanners.Glob;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -10,8 +11,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.github.glob.scan.Scanners.subPath;
-import static com.github.glob.scan.Scanners.tree;
+import static com.github.glob.scanners.Scanners.subPath;
+import static com.github.glob.scanners.Scanners.tree;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
