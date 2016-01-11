@@ -9,14 +9,14 @@ import java.nio.file.Paths;
  */
 public class Scanners {
 
-    private static final DummyScanner DUMMY = new DummyScanner();
+    private static final MatchScanner DUMMY = new MatchScanner();
     private static final TreeScanner TREE = new TreeScanner();
 
     public static Scanner tree() {
         return TREE;
     }
 
-    public static Scanner dummy() {
+    public static Scanner match() {
         return DUMMY;
     }
 

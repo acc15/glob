@@ -21,14 +21,14 @@ class ScanContext {
     }
 
     public void scanNext(Path path) {
-        if (node.nextNodes.isEmpty()) {
-            if (matchPredicate.test(path)) {
-                matchedPaths.add(path);
-            }
-            return;
-        }
         for (ScannerMerger.Node next : node.nextNodes.values()) {
             next.scanner.scan(path, new ScanContext(matchedPaths, next, matchPredicate));
+        }
+    }
+
+    public void matchFound(Path path) {
+        if (matchPredicate.test(path)) {
+            matchedPaths.add(path);
         }
     }
 

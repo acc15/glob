@@ -15,11 +15,10 @@ public class ScannerMerger {
 
     public void addSequence(List<Scanner> scanners) {
         Node node = root;
-        final Iterator<Scanner> iter = scanners.iterator();
-        while (iter.hasNext()) {
-            final Scanner scanner = iter.next();
-            node = node.addNext(scanner, !iter.hasNext());
+        for (Scanner scanner : scanners) {
+            node = node.addNext(scanner);
         }
+        node.addNext(Scanners.match());
     }
 
     public Set<Path> scan(final Path path, final Predicate<Path> predicate) throws IOException {
@@ -37,12 +36,9 @@ public class ScannerMerger {
             this.scanner = scanner;
         }
 
-        public Node addNext(Scanner matcher, boolean last) {
+        public Node addNext(Scanner matcher) {
             Node nextNode = nextNodes.get(matcher);
             if (nextNode != null) {
-                if (nextNode.nextNodes.isEmpty() || last) {
-                    nextNode.addNext(Scanners.dummy(), false);
-                }
                 return nextNode;
             }
             nextNode = new Node(matcher);
