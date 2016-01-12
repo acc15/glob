@@ -1,10 +1,12 @@
 package com.github.glob.scanners;
 
+import com.github.glob.GlobException;
 import com.github.glob.matchers.Matcher;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Vyacheslav Mayorov
@@ -12,8 +14,15 @@ import java.util.List;
  */
 public class Scanners {
 
-    private static final MatchScanner MATCH = new MatchScanner();
-    private static final TreeScanner TREE = new TreeScanner();
+    private static final Scanner MATCH = (path, context) -> context.matchFound(path);
+
+    private static final Scanner TREE = (path, context) -> {
+        try (final Stream<Path> stream = Files.walk(path)) {
+            stream.forEach(context::scanNext);
+        } catch (IOException e) {
+            throw new GlobException(e);
+        }
+    };
 
     public static Scanner tree() {
         return TREE;
@@ -23,16 +32,17 @@ public class Scanners {
         return MATCH;
     }
 
+    public static Scanner path(Path subPath) {
+        return new PathScanner(subPath);
+    }
+
     public static Scanner path(String first, String... more) {
-        return new PathScanner(Paths.get(first, more));
+        return path(Paths.get(first, more));
     }
 
     public static Scanner pattern(List<Matcher> pattern) {
         return new PatternScanner(pattern);
     }
 
-    public static Scanner path(Path subPath) {
-        return new PathScanner(subPath);
-    }
 
 }

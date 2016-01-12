@@ -15,10 +15,10 @@ import java.util.stream.Stream;
  */
 public class PatternScanner implements Scanner {
 
-    private final List<Matcher> pattern;
+    private final List<Matcher> matchers;
 
-    public PatternScanner(List<Matcher> pattern) {
-        this.pattern = pattern;
+    public PatternScanner(List<Matcher> matchers) {
+        this.matchers = matchers;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class PatternScanner implements Scanner {
         try (Stream<Path> stream = Files.list(path)) {
             stream.forEach(p -> {
                 final String name = p.getFileName().toString();
-                if (Matchers.matches(pattern, name)) {
+                if (Matchers.matches(matchers, name)) {
                     context.scanNext(path.resolve(name));
                 }
             });
