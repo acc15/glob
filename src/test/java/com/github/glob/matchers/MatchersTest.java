@@ -20,7 +20,7 @@ public class MatchersTest {
         final List<Matcher> pattern = Arrays.asList(
             Matchers.text("abc"),
             Matchers.zeroOrMore(),
-            Matchers.variant(Matchers.text("xyz"), Matchers.text("yui")),
+            Matchers.variants(Matchers.text("xyz"), Matchers.text("yui")),
             Matchers.any(),
             Matchers.text(".zip"));
 

@@ -9,8 +9,23 @@ import java.util.List;
  */
 public class Matchers {
 
-    private static final Matcher ANY = new AnyCharMatcher();
-    private static final Matcher ZERO_OR_MORE = new ZeroOrMoreMatcher();
+    private static final Matcher ANY = context -> {
+        if (!context.hasNextChar()) {
+            return false;
+        }
+        context.nextChar();
+        return context.matchNext();
+    };
+
+    private static final Matcher ZERO_OR_MORE = context -> {
+        while (!context.matchNext()) {
+            if (!context.hasNextChar()) {
+                return false;
+            }
+            context.nextChar();
+        }
+        return true;
+    };
 
     public static Matcher any() {
         return ANY;
@@ -20,12 +35,33 @@ public class Matchers {
         return ZERO_OR_MORE;
     }
 
-    public static Matcher variant(Matcher... matchers) {
-        return new VariantMatcher(Arrays.asList(matchers));
+    public static Matcher variants(Iterable<Matcher> variants) {
+        return context -> {
+            for (Matcher variant: variants) {
+                if (variant.matches(new MatchContext(context))) {
+                    return true;
+                }
+            }
+            return false;
+        };
+    }
+
+    public static Matcher variants(Matcher... matchers) {
+        return variants(Arrays.asList(matchers));
     }
 
     public static Matcher text(CharSequence sequence) {
-        return new TextMatcher(sequence);
+        return context -> {
+            for (int i=0; i<sequence.length(); i++) {
+                if (!context.hasNextChar()) {
+                    return false;
+                }
+                if (context.nextChar() != sequence.charAt(i)) {
+                    return false;
+                }
+            }
+            return context.matchNext();
+        };
     }
 
     public static boolean matches(List<Matcher> pattern, CharSequence sequence) {
