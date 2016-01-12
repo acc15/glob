@@ -22,7 +22,9 @@ public class ScannerMerger {
     }
 
     public Set<Path> scan(final Path path, final Predicate<Path> predicate) throws IOException {
-        return new ScanContext(root, predicate).scan(path);
+        final Set<Path> matchedPaths = new HashSet<>();
+        new ScanContext(matchedPaths, root, predicate).scanNext(path);
+        return matchedPaths;
     }
 
     static class Node {
