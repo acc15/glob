@@ -1,6 +1,7 @@
 package com.github.glob.scanners;
 
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -14,10 +15,19 @@ class ScanContext {
     private final ScannerMerger.Node node;
     private final Predicate<Path> matchPredicate;
 
+    public ScanContext(ScannerMerger.Node node, Predicate<Path> matchPredicate) {
+        this(new HashSet<>(), node, matchPredicate);
+    }
+
     ScanContext(Set<Path> matchedPaths, ScannerMerger.Node node, Predicate<Path> target) {
         this.matchedPaths = matchedPaths;
         this.node = node;
         this.matchPredicate = target;
+    }
+
+    public Set<Path> scan(Path path) {
+        scanNext(path);
+        return matchedPaths;
     }
 
     public void scanNext(Path path) {

@@ -21,7 +21,7 @@ public class VariantMatcher implements Matcher {
     @Override
     public boolean matches(MatchContext context) {
         for (Matcher variant: variants) {
-            if (context.matchBy(variant)) {
+            if (variant.matches(new MatchContext(context))) {
                 return true;
             }
         }

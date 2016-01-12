@@ -1,25 +1,22 @@
-package com.github.glob;
+package com.github.glob.scanners;
 
-import com.github.glob.scanners.ScannerMerger;
-import com.github.glob.scanners.Scanners;
+import com.github.glob.TargetType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 import static com.github.glob.scanners.Scanners.tree;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
  * @author Vyacheslav Mayorov
- * @since 2015-30-12
+ * @since 2016-12-01
  */
-public class ScannerMergerTest {
+public class ScannersTest {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();

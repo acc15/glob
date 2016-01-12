@@ -14,7 +14,7 @@ public class MatchContext {
     private final CharSequence sequence;
     private int charIndex;
 
-    public MatchContext(CharSequence sequence, List<Matcher> matchers) {
+    public MatchContext(List<Matcher> matchers, CharSequence sequence) {
         this.sequence = sequence;
         this.charIndex = 0;
         this.matchers = matchers;
@@ -46,7 +46,4 @@ public class MatchContext {
             : charIndex == sequence.length();
     }
 
-    public boolean matchBy(Matcher matcher) {
-        return matcher.matches(new MatchContext(this));
-    }
 }
