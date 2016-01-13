@@ -1,11 +1,12 @@
 package com.github.glob.scanners;
 
 import com.github.glob.GlobException;
-import com.github.glob.matchers.Matcher;
+import com.github.glob.matchers.Pattern;
 
 import java.io.IOException;
-import java.nio.file.*;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 /**
@@ -40,7 +41,7 @@ public class Scanners {
         return path(Paths.get(first, more));
     }
 
-    public static Scanner pattern(List<Matcher> pattern) {
+    public static Scanner pattern(Pattern pattern) {
         return new PatternScanner(pattern);
     }
 

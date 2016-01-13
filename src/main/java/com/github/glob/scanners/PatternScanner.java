@@ -1,12 +1,11 @@
 package com.github.glob.scanners;
 
 import com.github.glob.GlobException;
-import com.github.glob.matchers.*;
+import com.github.glob.matchers.Pattern;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -15,10 +14,10 @@ import java.util.stream.Stream;
  */
 public class PatternScanner implements Scanner {
 
-    private final List<Matcher> matchers;
+    private final Pattern pattern;
 
-    public PatternScanner(List<Matcher> matchers) {
-        this.matchers = matchers;
+    public PatternScanner(Pattern pattern) {
+        this.pattern = pattern;
     }
 
     @Override
@@ -26,12 +25,22 @@ public class PatternScanner implements Scanner {
         try (Stream<Path> stream = Files.list(path)) {
             stream.forEach(p -> {
                 final String name = p.getFileName().toString();
-                if (Matchers.matches(matchers, name)) {
+                if (pattern.matches(name)) {
                     context.scanNext(path.resolve(name));
                 }
             });
         } catch (IOException e) {
             throw new GlobException(e);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PatternScanner && ((PatternScanner)obj).pattern.equals(pattern);
+    }
+
+    @Override
+    public int hashCode() {
+        return pattern.hashCode();
     }
 }

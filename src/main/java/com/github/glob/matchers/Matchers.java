@@ -1,7 +1,6 @@
 package com.github.glob.matchers;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Vyacheslav Mayorov
@@ -36,14 +35,7 @@ public class Matchers {
     }
 
     public static Matcher variants(Iterable<Matcher> variants) {
-        return context -> {
-            for (Matcher variant: variants) {
-                if (variant.matches(new MatchContext(context))) {
-                    return true;
-                }
-            }
-            return false;
-        };
+        return new VariantMatcher(variants);
     }
 
     public static Matcher variants(Matcher... matchers) {
@@ -51,21 +43,8 @@ public class Matchers {
     }
 
     public static Matcher text(CharSequence sequence) {
-        return context -> {
-            for (int i=0; i<sequence.length(); i++) {
-                if (!context.hasNextChar()) {
-                    return false;
-                }
-                if (context.nextChar() != sequence.charAt(i)) {
-                    return false;
-                }
-            }
-            return context.matchNext();
-        };
+        return new TextMatcher(sequence);
     }
 
-    public static boolean matches(List<Matcher> pattern, CharSequence sequence) {
-        return new MatchContext(pattern, sequence).matchNext();
-    }
 
 }
