@@ -1,5 +1,7 @@
 package com.github.glob.matchers;
 
+import com.github.glob.common.CharIterator;
+
 import java.util.List;
 
 /**

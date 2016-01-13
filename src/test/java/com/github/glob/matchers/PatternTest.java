@@ -1,5 +1,6 @@
 package com.github.glob.matchers;
 
+import com.github.glob.common.CharIterator;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -15,7 +16,7 @@ public class PatternTest {
     
     @Test
     public void testParseSequence() throws Exception {
-        final List<Matcher> pattern = Pattern.parseSequence(new Pattern.CharIterator("a\\*b*{x,y}?.c{,pp,xx}"), false);
+        final List<Matcher> pattern = Pattern.parseSequence(new CharIterator("a\\*b*{x,y}?.c{,pp,xx}"), false);
 
         assertThat(pattern).isEqualTo(Arrays.asList(
                 Matchers.text("a*b"),

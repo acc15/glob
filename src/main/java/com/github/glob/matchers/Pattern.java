@@ -1,5 +1,7 @@
 package com.github.glob.matchers;
 
+import com.github.glob.common.CharIterator;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,32 +34,6 @@ public class Pattern {
     @Override
     public int hashCode() {
         return matchers.hashCode();
-    }
-
-    static final class CharIterator {
-        private final CharSequence sequence;
-        private int position;
-
-        public CharIterator(CharSequence sequence) {
-            this.sequence = sequence;
-        }
-
-        public CharIterator(CharSequence sequence, int position) {
-            this.sequence = sequence;
-            this.position = position;
-        }
-
-        public char getPreviousChar() {
-            return sequence.charAt(position-1);
-        }
-
-        public char next() {
-            return sequence.charAt(position++);
-        }
-
-        public boolean hasNext() {
-            return position < sequence.length();
-        }
     }
 
 
