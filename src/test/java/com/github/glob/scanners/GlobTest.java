@@ -1,5 +1,6 @@
 package com.github.glob.scanners;
 
+import com.github.glob.TargetType;
 import org.fest.assertions.core.Condition;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
@@ -144,6 +145,21 @@ public class GlobTest {
             basePath.resolve(Paths.get("tree", "a.txt")));
 
         assertThat(matchedFiles).are(new MatchCondition(glob));
+
+    }
+
+    @Test
+    public void testScanWithTargetTypeShouldReturnOnlyFiles() throws Exception {
+
+        final Glob glob = Glob.compile("**");
+        temporaryFolder.newFolder("tree");
+        temporaryFolder.newFile("tree/a.txt");
+        temporaryFolder.newFile("a.txt");
+
+        final Set<Path> matchedFiles = glob.scan(basePath, TargetType.FILE);
+        assertThat(matchedFiles).containsOnly(
+            basePath.resolve("a.txt"),
+            basePath.resolve(Paths.get("tree", "a.txt")));
 
     }
 
