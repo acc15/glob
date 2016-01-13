@@ -14,6 +14,9 @@ import java.util.stream.Stream;
 class TreeScanner implements Scanner {
     @Override
     public void scan(ScanContext context) {
+        if (!Files.exists(context.getPath())) {
+            return;
+        }
         try (final Stream<Path> stream = Files.walk(context.getPath())) {
             stream.forEach(context::scanNext);
         } catch (IOException e) {

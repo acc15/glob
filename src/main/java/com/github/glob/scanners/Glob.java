@@ -1,5 +1,6 @@
 package com.github.glob.scanners;
 
+import com.github.glob.TargetType;
 import com.github.glob.matchers.GlobPattern;
 
 import java.io.IOException;
@@ -42,10 +43,25 @@ public class Glob implements Predicate<Path> {
         return new MatchContext(path, root, 0).matchNext(0);
     }
 
+    public boolean test(final Path path, final TargetType target) {
+        return target.test(path) && test(path);
+    }
+
     public Set<Path> scan(final Path dir) throws IOException {
         final Set<Path> matches = new HashSet<>();
         new ScanContext(null, matches, root).scanNext(dir);
-        return matches;
+        return Collections.unmodifiableSet( matches );
+    }
+
+    public Set<Path> scan(final Path dir, final TargetType target) throws IOException {
+        final Set<Path> matches = new HashSet<Path>() {
+            @Override
+            public boolean add(Path o) {
+                return target.test(o) && super.add(o);
+            }
+        };
+        new ScanContext(null, matches, root).scanNext(dir);
+        return Collections.unmodifiableSet( matches );
     }
 
     static List<Scanner> parseSequence(String expression) {

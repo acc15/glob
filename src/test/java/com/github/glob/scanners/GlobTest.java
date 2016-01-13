@@ -148,6 +148,15 @@ public class GlobTest {
     }
 
     @Test
+    public void testScanShouldNotAddNonExistentPaths() throws Exception {
+
+        final Glob glob = Glob.compile("**");
+
+        final Set<Path> matches = glob.scan(basePath.resolve("abc"));
+        assertThat(matches).isEmpty();
+    }
+
+    @Test
     public void testMatch() throws Exception {
 
         final Glob glob = Glob.compile("**/a.txt");
