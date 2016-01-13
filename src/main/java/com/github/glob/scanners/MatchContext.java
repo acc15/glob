@@ -35,6 +35,10 @@ class MatchContext {
         return hasSubPath() && predicate.test(getPath().getName(namePosition).toString());
     }
 
+    public boolean isValidOffset(int offset) {
+        return offset + namePosition <= path.getNameCount();
+    }
+
     public Path getSubPath() {
         return path.subpath(namePosition, path.getNameCount());
     }

@@ -23,7 +23,7 @@ class TreeScanner implements Scanner {
 
     @Override
     public boolean matches(MatchContext context) {
-        for (int i=0; context.getPosition() + i <= context.getPath().getNameCount(); i++) {
+        for (int i=0; context.isValidOffset(i); i++) {
             if (context.matchNext(i)) {
                 return true;
             }
