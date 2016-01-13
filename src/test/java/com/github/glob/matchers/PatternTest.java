@@ -42,4 +42,19 @@ public class PatternTest {
         assertThat(pattern.matches("axy.c.cpp")).isFalse();
 
     }
+
+    @Test
+    public void testNestedVariants() throws Exception {
+
+        final Pattern pattern = Pattern.compile("{x?z,x*q}");
+
+        assertThat(pattern.matches("xyz")).isTrue();
+        assertThat(pattern.matches("xaaaq")).isTrue();
+        assertThat(pattern.matches("xaz")).isTrue();
+        assertThat(pattern.matches("xq")).isTrue();
+
+        assertThat(pattern.matches("xz")).isFalse();
+        assertThat(pattern.matches("xad")).isFalse();
+
+    }
 }
