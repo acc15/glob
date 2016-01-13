@@ -6,7 +6,7 @@ import java.util.List;
  * @author Vyacheslav Mayorov
  * @since 2016-13-01
  */
-public class SequenceMatcher implements Matcher {
+class SequenceMatcher implements Matcher {
 
     private final List<Matcher> matchers;
 

@@ -4,7 +4,7 @@ package com.github.glob.matchers;
  * @author Vyacheslav Mayorov
  * @since 2016-13-01
  */
-public class VariantMatcher implements Matcher {
+class VariantMatcher implements Matcher {
 
     private final Iterable<Matcher> variants;
 

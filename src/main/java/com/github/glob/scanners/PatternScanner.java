@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  * @author Vyacheslav Mayorov
  * @since 2016-12-01
  */
-public class PatternScanner implements Scanner {
+class PatternScanner implements Scanner {
 
     private final GlobPattern pattern;
 

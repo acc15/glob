@@ -7,7 +7,7 @@ import java.util.Set;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-class ScanContext {
+public class ScanContext {
 
     private final Path path;
     private final Set<Path> matches;

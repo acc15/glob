@@ -4,7 +4,7 @@ package com.github.glob.matchers;
  * @author Vyacheslav Mayorov
  * @since 2016-13-01
  */
-public class TextMatcher implements Matcher {
+class TextMatcher implements Matcher {
 
     private final CharSequence sequence;
 
