@@ -24,7 +24,7 @@ public class ScannersTest {
     @Test
     public void testSimpleScan() throws Exception {
 
-        final ScannerMerger scanner = new ScannerMerger();
+        final Glob scanner = new Glob();
 
         scanner.addSequence(Collections.singletonList(Scanners.path("src", "main")));
         scanner.addSequence(Collections.singletonList(Scanners.path("src", "main", "java")));
@@ -43,7 +43,7 @@ public class ScannersTest {
 
     @Test
     public void testTreeScan() throws Exception {
-        final ScannerMerger scanner = new ScannerMerger();
+        final Glob scanner = new Glob();
 
         scanner.addSequence(Arrays.asList(Scanners.path("tree"), tree()));
 
@@ -77,7 +77,7 @@ public class ScannersTest {
     @Test
     public void testTreeScanShouldSuggestInputPath() throws Exception {
 
-        final ScannerMerger scanner = new ScannerMerger();
+        final Glob scanner = new Glob();
 
         scanner.addSequence(Arrays.asList(Scanners.path("tree"), tree(), Scanners.path("a.txt")));
         temporaryFolder.newFolder("tree");

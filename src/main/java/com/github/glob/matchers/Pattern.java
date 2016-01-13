@@ -33,7 +33,16 @@ public class Pattern {
         return matchers.hashCode();
     }
 
-    public static Pattern compile(String expression) {
+    public static Pattern compile(CharSequence expression) {
+
+
+        for (int i=0; i<expression.length(); i++) {
+
+            final char v = expression.charAt(i);
+
+        }
+
+
         throw new RuntimeException("Not implemented yet!");
     }
 }

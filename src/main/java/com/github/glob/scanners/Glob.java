@@ -9,9 +9,20 @@ import java.util.function.Predicate;
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public class ScannerMerger {
+public class Glob {
 
     private final Node root = new Node(null);
+
+    public Glob() {
+    }
+
+    public Glob(List<Scanner> scanners) {
+        addSequence(scanners);
+    }
+
+    public Glob(Set<List<Scanner>> scannerSet) {
+        scannerSet.forEach(this::addSequence);
+    }
 
     public void addSequence(List<Scanner> scanners) {
         Node node = root;
