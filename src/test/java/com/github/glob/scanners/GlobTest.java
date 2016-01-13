@@ -146,4 +146,17 @@ public class GlobTest {
         assertThat(matchedFiles).are(new MatchCondition(glob));
 
     }
+
+    @Test
+    public void testMatch() throws Exception {
+
+        final Glob glob = Glob.compile("**/a.txt");
+        temporaryFolder.newFile("b.txt");
+
+        assertThat(glob.test(Paths.get(""))).isFalse();
+        assertThat(glob.test(Paths.get("b.txt"))).isFalse();
+        assertThat(glob.test(Paths.get("ddd/any/dir/a.txt"))).isTrue();
+        assertThat(glob.test(Paths.get("a.txt"))).isTrue();
+
+    }
 }
