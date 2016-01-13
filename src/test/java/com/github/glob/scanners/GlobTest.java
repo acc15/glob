@@ -1,14 +1,11 @@
 package com.github.glob.scanners;
 
 import org.fest.assertions.core.Condition;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.Set;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -57,11 +54,10 @@ public class GlobTest {
 
         final Set<Path> matches = glob.scan(basePath);
 
-        assertThat(matches).hasSize(3);
-
-        assertThat(matches).contains(basePath.resolve(Paths.get("src", "main", "cpp", "a.c")));
-        assertThat(matches).contains(basePath.resolve(Paths.get("src", "main", "cpp", "a.cpp")));
-        assertThat(matches).contains(basePath.resolve(Paths.get("src", "main", "cpp", "dir1", "b.c")));
+        assertThat(matches).containsOnly(
+            basePath.resolve(Paths.get("src", "main", "cpp", "a.c")),
+            basePath.resolve(Paths.get("src", "main", "cpp", "a.cpp")),
+            basePath.resolve(Paths.get("src", "main", "cpp", "dir1", "b.c")));
 
         assertThat(matches).are(new MatchCondition(glob));
 
@@ -76,9 +72,9 @@ public class GlobTest {
         temporaryFolder.newFolder("src", "test", "java");
 
         final Set<Path> matched = glob.scan(basePath);
-        assertThat(matched).contains(basePath.resolve(Paths.get("src", "main")));
-        assertThat(matched).contains(basePath.resolve(Paths.get("src", "main", "java")));
-        assertThat(matched).contains(basePath.resolve(Paths.get("src", "test", "java")));
+        assertThat(matched).containsOnly(basePath.resolve(Paths.get("src", "main")),
+            basePath.resolve(Paths.get("src", "main", "java")),
+            basePath.resolve(Paths.get("src", "test", "java")));
 
         assertThat(matched).are(new MatchCondition(glob));
 
@@ -96,11 +92,11 @@ public class GlobTest {
         temporaryFolder.newFile("c.txt");
 
         final Set<Path> matchedAny = glob.scan(basePath);
-        assertThat(matchedAny).hasSize(4);
-        assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "a.txt")));
-        assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "test", "b.txt")));
-        assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree")));
-        assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "test")));
+        assertThat(matchedAny).containsOnly(
+            basePath.resolve(Paths.get("tree", "a.txt")),
+            basePath.resolve(Paths.get("tree", "test", "b.txt")),
+            basePath.resolve(Paths.get("tree")),
+            basePath.resolve(Paths.get("tree", "test")));
 
         assertThat(matchedAny).are(new MatchCondition(glob));
 
@@ -114,7 +110,7 @@ public class GlobTest {
         temporaryFolder.newFile("tree/a.txt");
 
         final Set<Path> matches = glob.scan(basePath);
-        assertThat(matches).contains(basePath.resolve(Paths.get("tree", "a.txt")));
+        assertThat(matches).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
         assertThat(matches).are(new MatchCondition(glob));
 
     }
@@ -127,9 +123,27 @@ public class GlobTest {
         temporaryFolder.newFile("tree/a.txt");
 
         final Set<Path> matchedFiles = glob.scan(basePath);
-        assertThat(matchedFiles).isEqualTo(Collections.singleton(basePath.resolve(Paths.get("tree", "a.txt"))));
+        assertThat(matchedFiles).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
         assertThat(matchedFiles).are(new MatchCondition(glob));
 
     }
 
+    @Test
+    public void testDoubleStarWillMatchWholeTreeIncludingBaseDirectory() throws Exception {
+
+        final Glob glob = Glob.compile("**");
+        temporaryFolder.newFolder("tree");
+        temporaryFolder.newFile("tree/a.txt");
+        temporaryFolder.newFile("a.txt");
+
+        final Set<Path> matchedFiles = glob.scan(basePath);
+        assertThat(matchedFiles).containsOnly(
+            basePath,
+            basePath.resolve("tree"),
+            basePath.resolve("a.txt"),
+            basePath.resolve(Paths.get("tree", "a.txt")));
+
+        assertThat(matchedFiles).are(new MatchCondition(glob));
+
+    }
 }

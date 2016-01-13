@@ -43,9 +43,10 @@ public class ScannersTest {
         temporaryFolder.newFolder("src", "test", "java");
 
         final Set<Path> matched = scanner.scan(basePath);
-        assertThat(matched).contains(basePath.resolve(Paths.get("src", "main")));
-        assertThat(matched).contains(basePath.resolve(Paths.get("src", "main", "java")));
-        assertThat(matched).contains(basePath.resolve(Paths.get("src", "test", "java")));
+        assertThat(matched).containsOnly(
+            basePath.resolve(Paths.get("src", "main")),
+            basePath.resolve(Paths.get("src", "main", "java")),
+            basePath.resolve(Paths.get("src", "test", "java")));
 
     }
 
@@ -65,10 +66,11 @@ public class ScannersTest {
 
         final Set<Path> matchedAny = scanner.scan(basePath);
         assertThat(matchedAny).hasSize(4);
-        assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "a.txt")));
-        assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "test", "b.txt")));
-        assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree")));
-        assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "test")));
+        assertThat(matchedAny).containsOnly(
+            basePath.resolve(Paths.get("tree", "a.txt")),
+            basePath.resolve(Paths.get("tree", "test", "b.txt")),
+            basePath.resolve(Paths.get("tree")),
+            basePath.resolve(Paths.get("tree", "test")));
 
     }
 
@@ -80,7 +82,7 @@ public class ScannersTest {
         temporaryFolder.newFile("tree/a.txt");
 
         final Set<Path> matches = glob.scan(basePath);
-        assertThat(matches).contains(basePath.resolve(Paths.get("tree", "a.txt")));
+        assertThat(matches).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
 
     }
 
@@ -94,7 +96,7 @@ public class ScannersTest {
         temporaryFolder.newFile("tree/a.txt");
 
         final Set<Path> matchedFiles = scanner.scan(basePath);
-        assertThat(matchedFiles).isEqualTo(Collections.singleton(basePath.resolve(Paths.get("tree", "a.txt"))));
+        assertThat(matchedFiles).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
 
     }
 }
