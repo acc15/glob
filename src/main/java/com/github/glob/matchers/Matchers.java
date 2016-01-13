@@ -1,6 +1,7 @@
 package com.github.glob.matchers;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Vyacheslav Mayorov
@@ -41,6 +42,10 @@ public class Matchers {
     public static Matcher variants(Matcher... matchers) {
         return variants(Arrays.asList(matchers));
     }
+
+    public static Matcher sequence(List<Matcher> matchers) { return new SequenceMatcher(matchers); }
+
+    public static Matcher sequence(Matcher... matchers) { return sequence(Arrays.asList(matchers)); }
 
     public static Matcher text(CharSequence sequence) {
         return new TextMatcher(sequence);

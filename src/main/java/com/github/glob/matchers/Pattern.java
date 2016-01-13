@@ -20,7 +20,7 @@ public class Pattern {
     }
 
     public boolean matches(CharSequence sequence) {
-        return new MatchContext(matchers, sequence).matchNext();
+        return MatchContext.create(matchers, sequence).matchNext();
     }
 
     @Override
@@ -34,6 +34,7 @@ public class Pattern {
     }
 
     public static Pattern compile(CharSequence expression) {
+
 
 
         for (int i=0; i<expression.length(); i++) {

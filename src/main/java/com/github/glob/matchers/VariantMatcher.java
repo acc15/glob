@@ -15,7 +15,7 @@ public class VariantMatcher implements Matcher {
     @Override
     public boolean matches(MatchContext context) {
         for (Matcher variant: variants) {
-            if (variant.matches(new MatchContext(context))) {
+            if (variant.matches(context.copy())) {
                 return true;
             }
         }
@@ -24,7 +24,7 @@ public class VariantMatcher implements Matcher {
 
     @Override
     public int hashCode() {
-        return variants.hashCode();
+        return VariantMatcher.class.hashCode() ^ variants.hashCode();
     }
 
     @Override

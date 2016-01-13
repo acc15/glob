@@ -8,28 +8,19 @@ import java.util.List;
  */
 public class MatchContext {
 
+    private final MatchContext parent;
     private final List<Matcher> matchers;
     private final int nextMatcherIndex;
-
     private final CharSequence sequence;
     private int charIndex;
 
-    public MatchContext(List<Matcher> matchers, CharSequence sequence) {
-        this.sequence = sequence;
-        this.charIndex = 0;
+    private MatchContext(
+            MatchContext parent, List<Matcher> matchers, int nextMatcherIndex, CharSequence sequence, int charIndex) {
+        this.parent = parent;
         this.matchers = matchers;
-        this.nextMatcherIndex = 0;
-    }
-
-    public MatchContext(MatchContext context) {
-        this(context, context.nextMatcherIndex);
-    }
-
-    public MatchContext(MatchContext context, int nextMatcherIndex) {
-        this.matchers = context.matchers;
-        this.sequence = context.sequence;
-        this.charIndex = context.charIndex;
         this.nextMatcherIndex = nextMatcherIndex;
+        this.sequence = sequence;
+        this.charIndex = charIndex;
     }
 
     public char nextChar() {
@@ -41,9 +32,32 @@ public class MatchContext {
     }
 
     public boolean matchNext() {
-        return nextMatcherIndex < matchers.size()
-            ? matchers.get(nextMatcherIndex).matches(new MatchContext(this, nextMatcherIndex + 1))
-            : charIndex == sequence.length();
+        if (nextMatcherIndex < matchers.size()) {
+            return matchers.get(nextMatcherIndex).matches(next());
+        }
+        if (parent != null) {
+            return parent.reposition(charIndex).matchNext();
+        }
+        return charIndex == sequence.length();
     }
 
+    public MatchContext derive(List<Matcher> matchers) {
+        return new MatchContext(this, matchers, 0, sequence, charIndex);
+    }
+
+    public MatchContext copy() {
+        return new MatchContext(parent, matchers, nextMatcherIndex, sequence, charIndex);
+    }
+
+    public MatchContext next() {
+        return new MatchContext(parent, matchers, nextMatcherIndex + 1, sequence, charIndex);
+    }
+
+    public MatchContext reposition(int newCharIndex) {
+        return new MatchContext(parent, matchers, nextMatcherIndex, sequence, newCharIndex);
+    }
+
+    public static MatchContext create(List<Matcher> matchers, CharSequence sequence) {
+        return new MatchContext(null, matchers, 0, sequence, 0);
+    }
 }

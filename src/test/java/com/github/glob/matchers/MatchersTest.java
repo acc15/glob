@@ -31,4 +31,34 @@ public class MatchersTest {
 
     }
 
+    @Test
+    public void testVariantMatcher() throws Exception {
+
+        final Pattern pattern = new Pattern(
+                Matchers.variants(Matchers.text("abc"), Matchers.text("xyz")),
+                Matchers.text("ddd"));
+
+        assertThat(pattern.matches("abcddd")).isTrue();
+        assertThat(pattern.matches("xyzddd")).isTrue();
+        assertThat(pattern.matches("abcxyzddd")).isFalse();
+        assertThat(pattern.matches("xyzabcddd")).isFalse();
+
+    }
+
+    @Test
+    public void testVariantWithSequence() throws Exception {
+
+        final Pattern pattern = new Pattern(
+                Matchers.variants(Matchers.sequence(Matchers.any(), Matchers.text("yz")), Matchers.text("yui")));
+
+        assertThat(pattern.matches("ayz")).isTrue();
+        assertThat(pattern.matches("byz")).isTrue();
+        assertThat(pattern.matches("zyz")).isTrue();
+        assertThat(pattern.matches("yui")).isTrue();
+
+        assertThat(pattern.matches("abc")).isFalse();
+        assertThat(pattern.matches("cde")).isFalse();
+        assertThat(pattern.matches("fdkj")).isFalse();
+
+    }
 }
