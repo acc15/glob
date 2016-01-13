@@ -1,5 +1,6 @@
 package com.github.glob.matchers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,17 +34,101 @@ public class Pattern {
         return matchers.hashCode();
     }
 
-    public static Pattern compile(CharSequence expression) {
+    static final class CharIterator {
+        private final CharSequence sequence;
+        private int position;
 
-
-
-        for (int i=0; i<expression.length(); i++) {
-
-            final char v = expression.charAt(i);
-
+        public CharIterator(CharSequence sequence) {
+            this.sequence = sequence;
         }
 
+        public CharIterator(CharSequence sequence, int position) {
+            this.sequence = sequence;
+            this.position = position;
+        }
 
-        throw new RuntimeException("Not implemented yet!");
+        public char getPreviousChar() {
+            return sequence.charAt(position-1);
+        }
+
+        public char next() {
+            return sequence.charAt(position++);
+        }
+
+        public boolean hasNext() {
+            return position < sequence.length();
+        }
+    }
+
+
+    public static Pattern compile(CharSequence expression) {
+        final CharIterator iter = new CharIterator(expression);
+        return new Pattern(parseSequence(iter, false));
+    }
+
+    static List<Matcher> resetBuffer(StringBuilder sb, List<Matcher> matchers) {
+        if (sb.length() > 0) {
+            matchers.add(Matchers.text(sb.toString()));
+            sb.setLength(0);
+        }
+        return matchers;
+    }
+
+    static List<Matcher> parseSequence(CharIterator iter, boolean stopOnVariantChars) {
+        final List<Matcher> matchers = new ArrayList<>();
+        final StringBuilder textBuffer = new StringBuilder();
+
+        boolean escape = false;
+        while (iter.hasNext()) {
+
+            final char v = iter.next();
+            if (escape) {
+                textBuffer.append(v);
+                escape = false;
+                continue;
+            }
+            switch (v) {
+                case '*':
+                    resetBuffer(textBuffer, matchers).add(Matchers.zeroOrMore());
+                    break;
+
+                case '?':
+                    resetBuffer(textBuffer, matchers).add(Matchers.any());
+                    break;
+
+                case '{':
+                    resetBuffer(textBuffer, matchers).add(Matchers.variants(parseVariants(iter)));
+                    break;
+
+                case '\\':
+                    escape = true;
+                    break;
+
+                case '}':
+                case ',':
+                    if (stopOnVariantChars) {
+                        return resetBuffer(textBuffer, matchers);
+                    }
+
+                default:
+                    textBuffer.append(v);
+                    break;
+
+            }
+        }
+        resetBuffer(textBuffer, matchers);
+        return matchers;
+    }
+
+    static List<Matcher> parseVariants(CharIterator iter) {
+        final List<Matcher> matchers = new ArrayList<>();
+        while (iter.hasNext()) {
+            final List<Matcher> seq = parseSequence(iter, true);
+            matchers.add(seq.size() == 1 ? seq.get(0) : Matchers.sequence(seq));
+            if (iter.getPreviousChar() == '}') {
+                break;
+            }
+        }
+        return matchers;
     }
 }
