@@ -1,6 +1,6 @@
 package com.github.glob.scanners;
 
-import com.github.glob.matchers.Pattern;
+import com.github.glob.matchers.GlobPattern;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -54,10 +54,10 @@ public class Glob implements Predicate<Path> {
         for (String segment: segments) {
             if (segment.equals("**")) {
                 scanners.add(Scanners.tree());
-            } else if (Pattern.hasNonEscapedSpecialChars(segment)) {
+            } else if (GlobPattern.hasNonEscapedSpecialChars(segment)) {
                 scanners.add(Scanners.pattern(segment));
             } else {
-                scanners.add(Scanners.path(Pattern.unescape(segment)));
+                scanners.add(Scanners.path(GlobPattern.unescape(segment)));
             }
         }
         return scanners;

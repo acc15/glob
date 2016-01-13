@@ -14,51 +14,51 @@ public class MatchersTest {
     public void testPattern() throws Exception {
 
         // pattern "abc?{xyz,yui}.zip"
-        final Pattern pattern = new Pattern(
+        final GlobPattern pattern = new GlobPattern(
             Matchers.text("abc"),
             Matchers.zeroOrMore(),
             Matchers.variants(Matchers.text("xyz"), Matchers.text("yui")),
             Matchers.any(),
             Matchers.text(".zip"));
 
-        assertThat(pattern.matches("abcxyzl.zip")).isTrue();
-        assertThat(pattern.matches("abcdyuia.zip")).isTrue();
-        assertThat(pattern.matches("abceyuid.zip")).isTrue();
+        assertThat(pattern.test("abcxyzl.zip")).isTrue();
+        assertThat(pattern.test("abcdyuia.zip")).isTrue();
+        assertThat(pattern.test("abceyuid.zip")).isTrue();
 
-        assertThat(pattern.matches("abceyuid.zi")).isFalse(); // ".zip" not matches
-        assertThat(pattern.matches("abcddkokk.zip")).isFalse(); // "{xyz,yui}" not matches
-        assertThat(pattern.matches("abdcyui2.zip")).isFalse(); // "abc" not matches
+        assertThat(pattern.test("abceyuid.zi")).isFalse(); // ".zip" not matches
+        assertThat(pattern.test("abcddkokk.zip")).isFalse(); // "{xyz,yui}" not matches
+        assertThat(pattern.test("abdcyui2.zip")).isFalse(); // "abc" not matches
 
     }
 
     @Test
     public void testVariantMatcher() throws Exception {
 
-        final Pattern pattern = new Pattern(
+        final GlobPattern pattern = new GlobPattern(
                 Matchers.variants(Matchers.text("abc"), Matchers.text("xyz")),
                 Matchers.text("ddd"));
 
-        assertThat(pattern.matches("abcddd")).isTrue();
-        assertThat(pattern.matches("xyzddd")).isTrue();
-        assertThat(pattern.matches("abcxyzddd")).isFalse();
-        assertThat(pattern.matches("xyzabcddd")).isFalse();
+        assertThat(pattern.test("abcddd")).isTrue();
+        assertThat(pattern.test("xyzddd")).isTrue();
+        assertThat(pattern.test("abcxyzddd")).isFalse();
+        assertThat(pattern.test("xyzabcddd")).isFalse();
 
     }
 
     @Test
     public void testVariantWithSequence() throws Exception {
 
-        final Pattern pattern = new Pattern(
+        final GlobPattern pattern = new GlobPattern(
                 Matchers.variants(Matchers.sequence(Matchers.any(), Matchers.text("yz")), Matchers.text("yui")));
 
-        assertThat(pattern.matches("ayz")).isTrue();
-        assertThat(pattern.matches("byz")).isTrue();
-        assertThat(pattern.matches("zyz")).isTrue();
-        assertThat(pattern.matches("yui")).isTrue();
+        assertThat(pattern.test("ayz")).isTrue();
+        assertThat(pattern.test("byz")).isTrue();
+        assertThat(pattern.test("zyz")).isTrue();
+        assertThat(pattern.test("yui")).isTrue();
 
-        assertThat(pattern.matches("abc")).isFalse();
-        assertThat(pattern.matches("cde")).isFalse();
-        assertThat(pattern.matches("fdkj")).isFalse();
+        assertThat(pattern.test("abc")).isFalse();
+        assertThat(pattern.test("cde")).isFalse();
+        assertThat(pattern.test("fdkj")).isFalse();
 
     }
 }

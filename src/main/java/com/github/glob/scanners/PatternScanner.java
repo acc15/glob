@@ -1,7 +1,7 @@
 package com.github.glob.scanners;
 
 import com.github.glob.GlobException;
-import com.github.glob.matchers.Pattern;
+import com.github.glob.matchers.GlobPattern;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,9 +14,9 @@ import java.util.stream.Stream;
  */
 public class PatternScanner implements Scanner {
 
-    private final Pattern pattern;
+    private final GlobPattern pattern;
 
-    public PatternScanner(Pattern pattern) {
+    public PatternScanner(GlobPattern pattern) {
         this.pattern = pattern;
     }
 
@@ -28,7 +28,7 @@ public class PatternScanner implements Scanner {
         try (Stream<Path> stream = Files.list(context.getPath())) {
             stream.forEach(p -> {
                 final String name = p.getFileName().toString();
-                if (pattern.matches(name)) {
+                if (pattern.test(name)) {
                     context.scanNext(context.getPath().resolve(name));
                 }
             });
@@ -39,9 +39,7 @@ public class PatternScanner implements Scanner {
 
     @Override
     public boolean matches(MatchContext context) {
-        return context.hasSubPath()
-                && pattern.matches(context.getSubPath().getName(0).toString())
-                && context.matchNext(1);
+        return context.firstNameMatches(pattern) && context.matchNext(1);
     }
 
     @Override

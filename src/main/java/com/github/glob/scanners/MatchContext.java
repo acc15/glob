@@ -1,6 +1,7 @@
 package com.github.glob.scanners;
 
 import java.nio.file.Path;
+import java.util.function.Predicate;
 
 /**
  * @author Vyacheslav Mayorov
@@ -26,6 +27,14 @@ class MatchContext {
         return namePosition < path.getNameCount();
     }
 
+    public boolean startsWith(Path subPath) {
+        return hasSubPath() && getSubPath().startsWith(subPath);
+    }
+
+    public boolean firstNameMatches(Predicate<CharSequence> predicate) {
+        return hasSubPath() && predicate.test(getPath().getName(namePosition).toString());
+    }
+
     public Path getSubPath() {
         return path.subpath(namePosition, path.getNameCount());
     }
@@ -42,4 +51,5 @@ class MatchContext {
     public int getPosition() {
         return namePosition;
     }
+
 }

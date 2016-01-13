@@ -5,32 +5,34 @@ import com.github.glob.common.CharIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * @author Vyacheslav Mayorov
  * @since 2016-13-01
  */
-public class Pattern {
+public class GlobPattern implements Predicate<CharSequence> {
 
     public static final char ESCAPE_CHAR = '\\';
 
     private final List<Matcher> matchers;
 
-    public Pattern(Matcher... matchers) {
+    public GlobPattern(Matcher... matchers) {
         this.matchers = Arrays.asList(matchers);
     }
 
-    public Pattern(List<Matcher> matchers) {
+    public GlobPattern(List<Matcher> matchers) {
         this.matchers = matchers;
     }
 
-    public boolean matches(CharSequence sequence) {
+    @Override
+    public boolean test(CharSequence sequence) {
         return MatchContext.create(matchers, sequence).matchNext();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Pattern && ((Pattern)obj).matchers.equals(matchers);
+        return obj instanceof GlobPattern && ((GlobPattern)obj).matchers.equals(matchers);
     }
 
     @Override
@@ -39,9 +41,9 @@ public class Pattern {
     }
 
 
-    public static Pattern compile(CharSequence expression) {
+    public static GlobPattern compile(CharSequence expression) {
         final CharIterator iter = new CharIterator(expression);
-        return new Pattern(parseSequence(iter, false));
+        return new GlobPattern(parseSequence(iter, false));
     }
 
     static List<Matcher> resetBuffer(StringBuilder sb, List<Matcher> matchers) {

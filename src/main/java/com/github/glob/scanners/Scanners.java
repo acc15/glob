@@ -1,6 +1,6 @@
 package com.github.glob.scanners;
 
-import com.github.glob.matchers.Pattern;
+import com.github.glob.matchers.GlobPattern;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,12 +31,12 @@ public class Scanners {
         return path(Paths.get(first, more));
     }
 
-    public static Scanner pattern(Pattern pattern) {
+    public static Scanner pattern(GlobPattern pattern) {
         return new PatternScanner(pattern);
     }
 
     public static Scanner pattern(String pattern) {
-        return pattern(Pattern.compile(pattern));
+        return pattern(GlobPattern.compile(pattern));
     }
 
 
