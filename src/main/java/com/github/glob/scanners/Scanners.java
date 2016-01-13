@@ -45,5 +45,9 @@ public class Scanners {
         return new PatternScanner(pattern);
     }
 
+    public static Scanner pattern(String pattern) {
+        return pattern(Pattern.compile(pattern));
+    }
+
 
 }

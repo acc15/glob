@@ -21,12 +21,15 @@ public class PatternScanner implements Scanner {
     }
 
     @Override
-    public void scan(Path path, ScanContext context) {
-        try (Stream<Path> stream = Files.list(path)) {
+    public void scan(Path dir, ScanContext context) {
+        if (!Files.isDirectory(dir)) {
+            return;
+        }
+        try (Stream<Path> stream = Files.list(dir)) {
             stream.forEach(p -> {
                 final String name = p.getFileName().toString();
                 if (pattern.matches(name)) {
-                    context.scanNext(path.resolve(name));
+                    context.scanNext(dir.resolve(name));
                 }
             });
         } catch (IOException e) {

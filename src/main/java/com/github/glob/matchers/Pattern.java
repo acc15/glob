@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class Pattern {
 
+    public static final char ESCAPE_CHAR = '\\';
+
     private final List<Matcher> matchers;
 
     public Pattern(Matcher... matchers) {
@@ -106,5 +108,44 @@ public class Pattern {
             }
         }
         return matchers;
+    }
+
+    public static boolean hasNonEscapedSpecialChars(String expression) {
+        boolean escape = false;
+        for (int i=0; i<expression.length(); i++) {
+            final char c = expression.charAt(i);
+            if (escape) {
+                escape = false;
+                continue;
+            }
+            if (c == ESCAPE_CHAR) {
+                escape = true;
+                continue;
+            }
+            if (c == '*' || c == '?' || c == '{' || c == '}') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String unescape(String expression) {
+        final StringBuilder b = new StringBuilder();
+        boolean escape = false;
+        for (int i=0; i<expression.length(); i++) {
+            final char c = expression.charAt(i);
+            if (escape) {
+                b.append(c);
+                escape = false;
+                continue;
+            }
+            if (c == ESCAPE_CHAR) {
+                escape = true;
+            } else {
+                b.append(c);
+            }
+        }
+        return b.toString();
+
     }
 }

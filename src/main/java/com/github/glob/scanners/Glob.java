@@ -1,5 +1,7 @@
 package com.github.glob.scanners;
 
+import com.github.glob.matchers.Pattern;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
@@ -36,6 +38,29 @@ public class Glob {
         final Set<Path> matchedPaths = new HashSet<>();
         new ScanContext(matchedPaths, root, predicate).scanNext(path);
         return matchedPaths;
+    }
+
+    static List<Scanner> parseSequence(String expression) {
+        final List<Scanner> scanners = new ArrayList<>();
+        final String[] segments = expression.split("/");
+        for (String segment: segments) {
+            if (segment.equals("**")) {
+                scanners.add(Scanners.tree());
+            } else if (Pattern.hasNonEscapedSpecialChars(segment)) {
+                scanners.add(Scanners.pattern(segment));
+            } else {
+                scanners.add(Scanners.path(Pattern.unescape(segment)));
+            }
+        }
+        return scanners;
+    }
+
+    public static Glob compile(String expression, String... others) {
+        final Glob glob = new Glob(parseSequence(expression));
+        for (String e: others) {
+            glob.addSequence(parseSequence(e));
+        }
+        return glob;
     }
 
     static class Node {
