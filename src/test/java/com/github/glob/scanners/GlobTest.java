@@ -1,6 +1,5 @@
 package com.github.glob.scanners;
 
-import com.github.glob.TargetType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -34,7 +33,7 @@ public class GlobTest {
         temporaryFolder.newFile("src/main/cpp/dir1/g.tmp");
 
         final Path basePath = temporaryFolder.getRoot().toPath();
-        final Set<Path> matches = glob.scan(basePath, TargetType.FILE);
+        final Set<Path> matches = glob.scan(basePath);
 
         assertThat(matches).hasSize(3);
 

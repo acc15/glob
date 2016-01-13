@@ -15,10 +15,10 @@ import java.util.stream.Stream;
  */
 public class Scanners {
 
-    private static final Scanner MATCH = (path, context) -> context.matchFound(path);
+    private static final Scanner MATCH = ScanContext::matchFound;
 
-    private static final Scanner TREE = (path, context) -> {
-        try (final Stream<Path> stream = Files.walk(path)) {
+    private static final Scanner TREE = context -> {
+        try (final Stream<Path> stream = Files.walk(context.getPath())) {
             stream.forEach(context::scanNext);
         } catch (IOException e) {
             throw new GlobException(e);

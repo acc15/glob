@@ -16,8 +16,8 @@ class PathScanner implements Scanner {
     }
 
     @Override
-    public void scan(Path path, ScanContext context) {
-        final Path resolved = path.resolve(this.path);
+    public void scan(ScanContext context) {
+        final Path resolved = context.getPath().resolve(this.path);
         if (Files.exists(resolved)) {
             context.scanNext(resolved);
         }

@@ -5,7 +5,6 @@ import com.github.glob.matchers.Pattern;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * @author Vyacheslav Mayorov
@@ -16,6 +15,10 @@ public class Glob {
     private final Node root = new Node(null);
 
     public Glob() {
+    }
+
+    public Glob(Scanner... scanners) {
+        addSequence(Arrays.asList(scanners));
     }
 
     public Glob(List<Scanner> scanners) {
@@ -34,10 +37,10 @@ public class Glob {
         node.addNext(Scanners.match());
     }
 
-    public Set<Path> scan(final Path path, final Predicate<Path> predicate) throws IOException {
-        final Set<Path> matchedPaths = new HashSet<>();
-        new ScanContext(matchedPaths, root, predicate).scanNext(path);
-        return matchedPaths;
+    public Set<Path> scan(final Path dir) throws IOException {
+        final Set<Path> matches = new HashSet<>();
+        new ScanContext(null, matches, root).scanNext(dir);
+        return matches;
     }
 
     static List<Scanner> parseSequence(String expression) {

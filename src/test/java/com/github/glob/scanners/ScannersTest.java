@@ -1,13 +1,15 @@
 package com.github.glob.scanners;
 
-import com.github.glob.TargetType;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 import static com.github.glob.scanners.Scanners.tree;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -21,6 +23,13 @@ public class ScannersTest {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
+    private Path basePath;
+
+    @Before
+    public void setUp() throws Exception {
+        basePath = temporaryFolder.getRoot().toPath();
+    }
+
     @Test
     public void testSimpleScan() throws Exception {
 
@@ -33,8 +42,7 @@ public class ScannersTest {
         temporaryFolder.newFolder("src", "main", "java");
         temporaryFolder.newFolder("src", "test", "java");
 
-        final Path basePath = temporaryFolder.getRoot().toPath();
-        final Set<Path> matched = scanner.scan(basePath, TargetType.DIRECTORY);
+        final Set<Path> matched = scanner.scan(basePath);
         assertThat(matched).contains(basePath.resolve(Paths.get("src", "main")));
         assertThat(matched).contains(basePath.resolve(Paths.get("src", "main", "java")));
         assertThat(matched).contains(basePath.resolve(Paths.get("src", "test", "java")));
@@ -55,22 +63,24 @@ public class ScannersTest {
 
         final Path basePath = temporaryFolder.getRoot().toPath();
 
-        final Set<Path> matchedFiles = scanner.scan(basePath, TargetType.FILE);
-        assertThat(matchedFiles).hasSize(2);
-        assertThat(matchedFiles).contains(basePath.resolve(Paths.get("tree", "a.txt")));
-        assertThat(matchedFiles).contains(basePath.resolve(Paths.get("tree", "test", "b.txt")));
-
-        final Set<Path> matchedDirs = scanner.scan(basePath, TargetType.DIRECTORY);
-        assertThat(matchedDirs).hasSize(2);
-        assertThat(matchedDirs).contains(basePath.resolve(Paths.get("tree")));
-        assertThat(matchedDirs).contains(basePath.resolve(Paths.get("tree", "test")));
-
-        final Set<Path> matchedAny = scanner.scan(basePath, TargetType.ANY);
+        final Set<Path> matchedAny = scanner.scan(basePath);
         assertThat(matchedAny).hasSize(4);
         assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "a.txt")));
         assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "test", "b.txt")));
         assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree")));
         assertThat(matchedAny).contains(basePath.resolve(Paths.get("tree", "test")));
+
+    }
+
+    @Test
+    public void testTreeScanShouldMatchFile() throws Exception {
+
+        final Glob glob = new Glob(Scanners.path("tree"), Scanners.path("a.txt"), tree());
+        temporaryFolder.newFolder("tree");
+        temporaryFolder.newFile("tree/a.txt");
+
+        final Set<Path> matches = glob.scan(basePath);
+        assertThat(matches).contains(basePath.resolve(Paths.get("tree", "a.txt")));
 
     }
 
@@ -83,9 +93,7 @@ public class ScannersTest {
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFile("tree/a.txt");
 
-        final Path basePath = temporaryFolder.getRoot().toPath();
-
-        final Set<Path> matchedFiles = scanner.scan(basePath, TargetType.FILE);
+        final Set<Path> matchedFiles = scanner.scan(basePath);
         assertThat(matchedFiles).isEqualTo(Collections.singleton(basePath.resolve(Paths.get("tree", "a.txt"))));
 
     }

@@ -2,7 +2,6 @@ package com.github.glob.scanners;
 
 import java.nio.file.Path;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * @author Vyacheslav Mayorov
@@ -10,26 +9,28 @@ import java.util.function.Predicate;
  */
 class ScanContext {
 
-    private final Set<Path> matchedPaths;
+    private final Path path;
+    private final Set<Path> matches;
     private final Glob.Node node;
-    private final Predicate<Path> matchPredicate;
 
-    ScanContext(Set<Path> matchedPaths, Glob.Node node, Predicate<Path> target) {
-        this.matchedPaths = matchedPaths;
+    ScanContext(Path path, Set<Path> matches, Glob.Node node) {
+        this.path = path;
+        this.matches = matches;
         this.node = node;
-        this.matchPredicate = target;
+    }
+
+    public Path getPath() {
+        return path;
     }
 
     public void scanNext(Path path) {
         for (Glob.Node next : node.nextNodes.values()) {
-            next.scanner.scan(path, new ScanContext(matchedPaths, next, matchPredicate));
+            next.scanner.scan(new ScanContext(path, matches, next));
         }
     }
 
-    public void matchFound(Path path) {
-        if (matchPredicate.test(path)) {
-            matchedPaths.add(path);
-        }
+    public void matchFound() {
+        matches.add(path);
     }
 
 }
