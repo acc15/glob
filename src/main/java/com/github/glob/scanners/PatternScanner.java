@@ -38,6 +38,13 @@ public class PatternScanner implements Scanner {
     }
 
     @Override
+    public boolean matches(MatchContext context) {
+        return context.hasSubPath()
+                && pattern.matches(context.getSubPath().getName(0).toString())
+                && context.matchNext(1);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         return obj instanceof PatternScanner && ((PatternScanner)obj).pattern.equals(pattern);
     }

@@ -6,4 +6,5 @@ package com.github.glob.scanners;
  */
 public interface Scanner {
     void scan(ScanContext context);
+    boolean matches(MatchContext context);
 }

@@ -5,12 +5,13 @@ import com.github.glob.matchers.Pattern;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * @author Vyacheslav Mayorov
  * @since 2015-30-12
  */
-public class Glob {
+public class Glob implements Predicate<Path> {
 
     private final Node root = new Node(null);
 
@@ -35,6 +36,10 @@ public class Glob {
             node = node.addNext(scanner);
         }
         node.addNext(Scanners.match());
+    }
+
+    public boolean test(final Path path) {
+        return new MatchContext(path, root, 0).matchNext(0);
     }
 
     public Set<Path> scan(final Path dir) throws IOException {

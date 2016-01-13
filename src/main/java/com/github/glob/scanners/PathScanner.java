@@ -24,6 +24,13 @@ class PathScanner implements Scanner {
     }
 
     @Override
+    public boolean matches(MatchContext context) {
+        return context.hasSubPath()
+                && context.getSubPath().startsWith(path)
+                && context.matchNext(path.getNameCount());
+    }
+
+    @Override
     public int hashCode() {
         return path.hashCode();
     }
