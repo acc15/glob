@@ -7,6 +7,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -38,6 +39,24 @@ public class GlobTest {
         public boolean matches(Path value) {
             return glob.test(basePath.relativize(value));
         }
+    }
+
+    @Test
+    public void testParseSequenceWithoutSpecialChars() throws Exception {
+        final List<Scanner> scanners= Glob.parseSequence("s\\r\\c/**/ab\\c");
+        assertThat(scanners).containsExactly(Scanners.path("src"), Scanners.tree(), Scanners.path("abc"));
+    }
+
+    @Test
+    public void testParseSequenceWithEscapedSpecialChars() throws Exception {
+        final List<Scanner> scanners= Glob.parseSequence("s\\r\\c/**/\\{abc\\}");
+        assertThat(scanners).containsExactly(Scanners.path("src"), Scanners.tree(), Scanners.path("{abc}"));
+    }
+
+    @Test
+    public void testParseSequenceWithSpecialChars() throws Exception {
+        final List<Scanner> scanners= Glob.parseSequence("s\\r\\c/**/aaa{abc,xyz}.java");
+        assertThat(scanners).containsExactly(Scanners.path("src"), Scanners.tree(), Scanners.pattern("aaa{abc,xyz}.java"));
     }
 
     @Test
