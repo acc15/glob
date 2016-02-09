@@ -35,7 +35,7 @@ boolean isPhotoOfCat = glob.test(Paths.get("C:","Users","CurrentUser", "photos",
 Out-of-box Java globs (
     [FileSystem#getPathMatcher(String)](https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-), 
     [Files#newDirectoryStream(Path, String)](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html#newDirectoryStream-java.nio.file.Path-java.lang.String-)) 
-doesn't support _normal_ zero-or-more directories match syntax (ant-like `**`). 
+doesn't support _normal_ zero-or-more directory match syntax (ant-like `**`).
 In Java glob patterns `**` means 'any character crossing directory boundaries'.
 
 But what if u want to find files starting with letter 'a' and having extension '.png'?
