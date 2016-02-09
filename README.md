@@ -2,6 +2,8 @@
 
 This is a tiny dependency-free implementation of glob patterns.
 
+![Build status](https://travis-ci.org/acc15/glob.svg?branch=master)
+
 License: MIT
 
 ## Syntax
