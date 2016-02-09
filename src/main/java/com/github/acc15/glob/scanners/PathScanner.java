@@ -1,4 +1,4 @@
-package com.github.glob.scanners;
+package com.github.acc15.glob.scanners;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

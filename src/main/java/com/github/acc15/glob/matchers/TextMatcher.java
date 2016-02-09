@@ -1,4 +1,4 @@
-package com.github.glob.matchers;
+package com.github.acc15.glob.matchers;
 
 /**
  * @author Vyacheslav Mayorov

@@ -1,4 +1,4 @@
-package com.github.glob;
+package com.github.acc15.glob;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

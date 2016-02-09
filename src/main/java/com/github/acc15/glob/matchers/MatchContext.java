@@ -1,6 +1,4 @@
-package com.github.glob.matchers;
-
-import com.github.glob.common.CharIterator;
+package com.github.acc15.glob.matchers;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package com.github.glob.scanners;
+package com.github.acc15.glob.scanners;
 
-import com.github.glob.matchers.GlobPattern;
+import com.github.acc15.glob.matchers.GlobPattern;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

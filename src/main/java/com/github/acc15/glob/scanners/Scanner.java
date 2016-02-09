@@ -1,4 +1,4 @@
-package com.github.glob.scanners;
+package com.github.acc15.glob.scanners;
 
 /**
  * @author Vyacheslav Mayorov

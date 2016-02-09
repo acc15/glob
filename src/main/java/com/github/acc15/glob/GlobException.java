@@ -1,4 +1,4 @@
-package com.github.glob;
+package com.github.acc15.glob;
 
 /**
  * @author Vyacheslav Mayorov

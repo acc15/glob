@@ -1,6 +1,6 @@
-package com.github.glob.scanners;
+package com.github.acc15.glob.scanners;
 
-import com.github.glob.GlobException;
+import com.github.acc15.glob.GlobException;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -1,6 +1,7 @@
-package com.github.glob.matchers;
+package com.github.acc15.glob.matchers;
 
-import com.github.glob.common.CharIterator;
+import com.github.acc15.glob.common.CharIterator;
+import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public class GlobPatternTest {
     public void testParseSequence() throws Exception {
         final List<Matcher> pattern = GlobPattern.parseSequence(new CharIterator("a\\*b*{x,y}?.c{,pp,xx}"), false);
 
-        assertThat(pattern).isEqualTo(Arrays.asList(
+        Assertions.assertThat(pattern).isEqualTo(Arrays.asList(
                 Matchers.text("a*b"),
                 Matchers.zeroOrMore(),
                 Matchers.variants(Matchers.text("x"), Matchers.text("y")),

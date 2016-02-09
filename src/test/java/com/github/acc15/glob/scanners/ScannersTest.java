@@ -1,4 +1,4 @@
-package com.github.glob.scanners;
+package com.github.acc15.glob.scanners;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.github.glob.scanners.Scanners.tree;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
@@ -54,7 +53,7 @@ public class ScannersTest {
     public void testTreeScan() throws Exception {
         final Glob scanner = new Glob();
 
-        scanner.addSequence(Arrays.asList(Scanners.path("tree"), tree()));
+        scanner.addSequence(Arrays.asList(Scanners.path("tree"), Scanners.tree()));
 
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFolder("tree", "test");
@@ -77,7 +76,7 @@ public class ScannersTest {
     @Test
     public void testTreeScanShouldMatchFile() throws Exception {
 
-        final Glob glob = new Glob(Scanners.path("tree"), Scanners.path("a.txt"), tree());
+        final Glob glob = new Glob(Scanners.path("tree"), Scanners.path("a.txt"), Scanners.tree());
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFile("tree/a.txt");
 
@@ -91,7 +90,7 @@ public class ScannersTest {
 
         final Glob scanner = new Glob();
 
-        scanner.addSequence(Arrays.asList(Scanners.path("tree"), tree(), Scanners.path("a.txt")));
+        scanner.addSequence(Arrays.asList(Scanners.path("tree"), Scanners.tree(), Scanners.path("a.txt")));
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFile("tree/a.txt");
 

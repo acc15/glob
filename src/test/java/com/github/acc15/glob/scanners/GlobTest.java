@@ -1,6 +1,6 @@
-package com.github.glob.scanners;
+package com.github.acc15.glob.scanners;
 
-import com.github.glob.TargetType;
+import com.github.acc15.glob.TargetType;
 import org.fest.assertions.core.Condition;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;

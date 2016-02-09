@@ -1,6 +1,6 @@
-package com.github.glob.matchers;
+package com.github.acc15.glob.matchers;
 
-import com.github.glob.common.CharIterator;
+import com.github.acc15.glob.common.CharIterator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
