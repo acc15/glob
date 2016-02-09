@@ -28,8 +28,8 @@
 
     <scm>
         <url>https://github.com/acc15/glob</url>
-        <connection>scm:git:git://github.com/acc15/glob.git</connection>
-        <developerConnection>scm:git:git@github.com:acc15/glob.git</developerConnection>
+        <connection>scm:git:https://github.com/acc15/glob.git</connection>
+        <developerConnection>scm:git:https://github.com/acc15/glob.git</developerConnection>
     </scm>
 
     <developers>
@@ -40,6 +40,13 @@
             <url>https://github.com/acc15</url>
         </developer>
     </developers>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -65,6 +72,17 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
         </plugins>
