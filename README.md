@@ -15,7 +15,7 @@ License: MIT
 * `**` - matches any zero-or-more path segments
 * `/` - path separator (both on windows and unix). 
 
-Note that `\` character as path separator wont work on Windows and will be treated as simple character, because:
+Note that `\` character wont work on Windows as path separator and will be treated as simple character, because:
   * This will force to write similar globs
   * At least on Linux (`ext4`) file and directory names can contain `\` character
 
