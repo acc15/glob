@@ -7,8 +7,8 @@ import org.junit.rules.TemporaryFolder;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -201,6 +201,24 @@ public class GlobTest {
         assertThat(glob.test(Paths.get("b.txt"))).isFalse();
         assertThat(glob.test(Paths.get("ddd/any/dir/a.txt"))).isTrue();
         assertThat(glob.test(Paths.get("a.txt"))).isTrue();
+
+    }
+
+    @Test
+    public void testPredicate() throws Exception {
+
+        final Glob glob = Glob.compile("glob*.java");
+
+        final List<Path> paths = Arrays.asList(
+            Paths.get("global.txt"),
+            Paths.get("glob.java"),
+            Paths.get("glob.java.cpp"));
+
+        assertThat( paths.stream().anyMatch(glob) ).isTrue();
+        assertThat( paths.stream().allMatch(glob) ).isFalse();
+
+        final List<Path> matches = paths.stream().filter(glob).collect(Collectors.toList());
+        assertThat(matches).containsExactly(Paths.get("glob.java"));
 
     }
 }
