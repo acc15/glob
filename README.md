@@ -17,7 +17,7 @@ License: MIT
 
 Note that `\` character as path separator wont work on Windows and will be treated as simple character, because:
   * This will force to write similar globs
-  * At least on Linux (`ext4`) file and directory names can contain '\' character
+  * At least on Linux (`ext4`) file and directory names can contain `\` character
 
 ## Examples
 
