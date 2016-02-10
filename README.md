@@ -27,7 +27,7 @@ Check whether specified path matches glob or not
 
 ```Java
 Glob glob = Glob.compile("photos/cats/**/*.png");
-boolean isPhotoOfCat = glob.test(Paths.get("C:","Users","CurrentUser", "photos", "cats", "trojan.exe"), TargetType.FILE);
+boolean isPhotoOfCat = glob.test(Paths.get("photos", "cats", "trojan.exe"), TargetType.FILE);
 ```
 
 
