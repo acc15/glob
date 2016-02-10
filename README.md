@@ -6,6 +6,16 @@ This is a tiny dependency-free implementation of glob patterns.
 
 License: MIT
 
+## Maven
+
+Latest artifacts was deployed to Maven Central:
+
+    <dependency>
+        <groupId>com.github.acc15</groupId>
+        <artifactId>glob</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+
 ## Syntax
 
 * `?` - matches any single charater
