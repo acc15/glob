@@ -45,7 +45,7 @@ Glob glob = Glob.compile("photos/cats/**/*.png");
 boolean isPhotoOfCat = glob.test(Paths.get("photos", "cats", "trojan.exe"), TargetType.FILE);
 ```
 
-`Glob` class is implemented as `Predicate<Path>` and therefore can be used in Java 8 Stream API:
+`Glob` class implements `Predicate<Path>` and therefore can be used in Java 8 Stream API:
 
 ```Java
 Glob glob = Glob.compile("*-cat.{jpg,png}");
