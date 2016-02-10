@@ -7,7 +7,7 @@ This is a tiny dependency-free implementation of glob patterns.
 License: MIT
 
 ## Syntax
-
+a
 * `?` - matches any single charater
 * `*` - matches any zero-or-more characters
 * `{variant1,variant2,...,variantN}` - matches any of specified variant 
