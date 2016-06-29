@@ -1,7 +1,7 @@
 package com.github.acc15.glob.scanners;
 
 import com.github.acc15.glob.TargetType;
-import org.fest.assertions.core.Condition;
+import org.assertj.core.api.Condition;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 
@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Vyacheslav Mayorov
