@@ -221,4 +221,15 @@ public class GlobTest {
         assertThat(matches).containsExactly(Paths.get("glob.java"));
 
     }
+
+    @Test
+    public void testIncludesAndExcludes() throws Exception {
+        Glob glob = Glob.compile("a{a,b}.jar");
+
+        temporaryFolder.newFile("aa.jar");
+        temporaryFolder.newFile("ab.jar");
+
+        Set<Path> paths = glob.scan(basePath, Glob.compile("ab.jar").negate());
+        assertThat(paths).containsExactly(Paths.get("aa.jar"));
+    }
 }

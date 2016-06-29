@@ -6,6 +6,7 @@ import com.github.acc15.glob.matchers.GlobPattern;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -43,24 +44,19 @@ public class Glob implements Predicate<Path> {
         return new MatchContext(path, root, 0).matchNext(0);
     }
 
-    public boolean test(final Path path, final TargetType target) {
-        return target.test(path) && test(path);
+    public boolean test(final Path path, final Predicate<Path> predicate) {
+        return predicate.test(path) && test(path);
     }
 
     public Set<Path> scan(final Path dir) throws IOException {
         final Set<Path> matches = new HashSet<>();
-        new ScanContext(null, matches, root).scanNext(dir);
+        new ScanContext(null, new RelativizingPathConsumer(dir, matches::add), root).scanNext(dir);
         return Collections.unmodifiableSet( matches );
     }
 
-    public Set<Path> scan(final Path dir, final TargetType target) throws IOException {
-        final Set<Path> matches = new HashSet<Path>() {
-            @Override
-            public boolean add(Path o) {
-                return target.test(o) && super.add(o);
-            }
-        };
-        new ScanContext(null, matches, root).scanNext(dir);
+    public Set<Path> scan(final Path dir, final Predicate<Path> predicate) throws IOException {
+        final Set<Path> matches = new HashSet<>();
+        new ScanContext(null, new RelativizingPathConsumer(dir, new FilteringPathConsumer(predicate, matches::add)), root).scanNext(dir);
         return Collections.unmodifiableSet( matches );
     }
 
@@ -77,6 +73,14 @@ public class Glob implements Predicate<Path> {
             }
         }
         return scanners;
+    }
+
+    public static Glob compile(Iterable<String> expressions) {
+        final Glob glob = new Glob();
+        for (String e: expressions) {
+            glob.addSequence(parseSequence(e));
+        }
+        return glob;
     }
 
     public static Glob compile(String expression, String... others) {
@@ -106,6 +110,40 @@ public class Glob implements Predicate<Path> {
             return nextNode;
         }
 
+    }
+
+    static class RelativizingPathConsumer implements Consumer<Path> {
+        private final Consumer<Path> next;
+        private final Path baseDir;
+
+        public RelativizingPathConsumer(Path baseDir, Consumer<Path> next) {
+            this.baseDir = baseDir;
+            this.next = next;
+        }
+
+        @Override
+        public void accept(Path path) {
+            Path relativePath = baseDir.relativize(path);
+            next.accept(relativePath);
+        }
+    }
+
+    static class FilteringPathConsumer implements Consumer<Path> {
+        private Consumer<Path> next;
+        private Predicate<Path> predicate;
+
+        public FilteringPathConsumer(Predicate<Path> predicate, Consumer<Path> next) {
+            this.predicate = predicate;
+            this.next = next;
+        }
+
+        @Override
+        public void accept(Path path) {
+            if (!predicate.test(path)) {
+                return;
+            }
+            next.accept(path);
+        }
     }
 
 }
