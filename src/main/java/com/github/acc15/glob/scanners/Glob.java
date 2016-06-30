@@ -1,6 +1,5 @@
 package com.github.acc15.glob.scanners;
 
-import com.github.acc15.glob.TargetType;
 import com.github.acc15.glob.matchers.GlobPattern;
 
 import java.io.IOException;
@@ -8,6 +7,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Vyacheslav Mayorov
@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 public class Glob implements Predicate<Path> {
 
     private final Node root = new Node(null);
+    private int sequence = 0;
 
     public Glob() {
     }
@@ -37,7 +38,8 @@ public class Glob implements Predicate<Path> {
         for (Scanner scanner : scanners) {
             node = node.addNext(scanner);
         }
-        node.addNext(Scanners.match());
+        node.addNext(Scanners.match(sequence));
+        ++sequence;
     }
 
     public boolean test(final Path path) {
@@ -49,15 +51,18 @@ public class Glob implements Predicate<Path> {
     }
 
     public Set<Path> scan(final Path dir) throws IOException {
-        final Set<Path> matches = new HashSet<>();
-        new ScanContext(null, new RelativizingPathConsumer(dir, matches::add), root).scanNext(dir);
-        return Collections.unmodifiableSet( matches );
+        final TreeSet<MatchedPath> matches = new TreeSet<>();
+        RelativizingPathCollector collector = new RelativizingPathCollector(dir, new AppendingPathCollector(matches));
+        new ScanContext(null, collector, root).scanNext(dir);
+        return toPathSet(matches);
     }
 
     public Set<Path> scan(final Path dir, final Predicate<Path> predicate) throws IOException {
-        final Set<Path> matches = new HashSet<>();
-        new ScanContext(null, new RelativizingPathConsumer(dir, new FilteringPathConsumer(predicate, matches::add)), root).scanNext(dir);
-        return Collections.unmodifiableSet( matches );
+        final TreeSet<MatchedPath> matches = new TreeSet<>();
+        RelativizingPathCollector collector = new RelativizingPathCollector(dir,
+            new FilteringPathCollector(predicate, new AppendingPathCollector(matches)));
+        new ScanContext(null, collector, root).scanNext(dir);
+        return toPathSet(matches);
     }
 
     static List<Scanner> parseSequence(String expression) {
@@ -112,38 +117,55 @@ public class Glob implements Predicate<Path> {
 
     }
 
-    static class RelativizingPathConsumer implements Consumer<Path> {
-        private final Consumer<Path> next;
+    private static class RelativizingPathCollector implements PathCollector {
+        private final PathCollector next;
         private final Path baseDir;
 
-        public RelativizingPathConsumer(Path baseDir, Consumer<Path> next) {
+        public RelativizingPathCollector(Path baseDir, PathCollector next) {
             this.baseDir = baseDir;
             this.next = next;
         }
 
         @Override
-        public void accept(Path path) {
+        public void collect(Path path, int order) {
             Path relativePath = baseDir.relativize(path);
-            next.accept(relativePath);
+            next.collect(relativePath, order);
         }
     }
 
-    static class FilteringPathConsumer implements Consumer<Path> {
-        private Consumer<Path> next;
+    private static class FilteringPathCollector implements PathCollector {
+        private PathCollector next;
         private Predicate<Path> predicate;
 
-        public FilteringPathConsumer(Predicate<Path> predicate, Consumer<Path> next) {
+        public FilteringPathCollector(Predicate<Path> predicate, PathCollector next) {
             this.predicate = predicate;
             this.next = next;
         }
 
         @Override
-        public void accept(Path path) {
+        public void collect(Path path, int order) {
             if (!predicate.test(path)) {
                 return;
             }
-            next.accept(path);
+            next.collect(path, order);
         }
+    }
+
+    private static class AppendingPathCollector implements PathCollector {
+        private Collection<MatchedPath> collection;
+
+        public AppendingPathCollector(Collection<MatchedPath> collection) {
+            this.collection = collection;
+        }
+
+        @Override
+        public void collect(Path path, int order) {
+            collection.add(new MatchedPath(path, order));
+        }
+    }
+
+    private static Set<Path> toPathSet(Collection<MatchedPath> matchedPaths) {
+        return matchedPaths.stream().map(MatchedPath::getPath).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 }

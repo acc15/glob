@@ -11,16 +11,14 @@ import java.nio.file.Paths;
  */
 public class Scanners {
 
-    private static final Scanner MATCH = new MatchScanner();
-
     private static final Scanner TREE = new TreeScanner();
 
     public static Scanner tree() {
         return TREE;
     }
 
-    public static Scanner match() {
-        return MATCH;
+    public static Scanner match(int order) {
+        return new MatchScanner(order);
     }
 
     public static Scanner path(Path subPath) {

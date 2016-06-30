@@ -8,6 +8,7 @@ import org.junit.rules.TemporaryFolder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -41,7 +42,7 @@ public class ScannersTest {
         temporaryFolder.newFolder("src", "main", "java");
         temporaryFolder.newFolder("src", "test", "java");
 
-        final Set<Path> matched = scanner.scan(basePath);
+        final Collection<Path> matched = scanner.scan(basePath);
         assertThat(matched).containsOnly(
             basePath.resolve(Paths.get("src", "main")),
             basePath.resolve(Paths.get("src", "main", "java")),
@@ -63,7 +64,7 @@ public class ScannersTest {
 
         final Path basePath = temporaryFolder.getRoot().toPath();
 
-        final Set<Path> matchedAny = scanner.scan(basePath);
+        final Collection<Path> matchedAny = scanner.scan(basePath);
         assertThat(matchedAny).hasSize(4);
         assertThat(matchedAny).containsOnly(
             basePath.resolve(Paths.get("tree", "a.txt")),
@@ -80,7 +81,7 @@ public class ScannersTest {
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFile("tree/a.txt");
 
-        final Set<Path> matches = glob.scan(basePath);
+        final Collection<Path> matches = glob.scan(basePath);
         assertThat(matches).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
 
     }
@@ -94,7 +95,7 @@ public class ScannersTest {
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFile("tree/a.txt");
 
-        final Set<Path> matchedFiles = scanner.scan(basePath);
+        final Collection<Path> matchedFiles = scanner.scan(basePath);
         assertThat(matchedFiles).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
 
     }

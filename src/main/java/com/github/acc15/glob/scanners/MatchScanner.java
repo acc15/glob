@@ -5,9 +5,16 @@ package com.github.acc15.glob.scanners;
  * @since 2016-13-01
  */
 class MatchScanner implements Scanner {
+
+    private int order;
+
+    public MatchScanner(int order) {
+        this.order = order;
+    }
+
     @Override
     public void scan(ScanContext context) {
-        context.matchFound();
+        context.matchFound(order);
     }
 
     @Override

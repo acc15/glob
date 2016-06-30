@@ -1,6 +1,7 @@
 package com.github.acc15.glob.scanners;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -11,12 +12,12 @@ import java.util.function.Consumer;
 public class ScanContext {
 
     private final Path path;
-    private final Consumer<Path> consumer;
+    private final PathCollector collector;
     private final Glob.Node node;
 
-    ScanContext(Path path, Consumer<Path> consumer, Glob.Node node) {
+    ScanContext(Path path, PathCollector collector, Glob.Node node) {
         this.path = path;
-        this.consumer = consumer;
+        this.collector = collector;
         this.node = node;
     }
 
@@ -25,13 +26,14 @@ public class ScanContext {
     }
 
     public void scanNext(Path path) {
-        for (Glob.Node next : node.nextNodes.values()) {
-            next.scanner.scan(new ScanContext(path, consumer, next));
+        Collection<Glob.Node> nextNodes = node.nextNodes.values();
+        for (Glob.Node next : nextNodes) {
+            next.scanner.scan(new ScanContext(path, collector, next));
         }
     }
 
-    public void matchFound() {
-        consumer.accept(path);
+    public void matchFound(int order) {
+        collector.collect(path, order);
     }
 
 }

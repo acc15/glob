@@ -72,7 +72,7 @@ public class GlobTest {
         temporaryFolder.newFile("src/main/cpp/dir1/b.c");
         temporaryFolder.newFile("src/main/cpp/dir1/g.tmp");
 
-        final Set<Path> matches = glob.scan(basePath);
+        final Collection<Path> matches = glob.scan(basePath);
 
         assertThat(matches).containsOnly(
             basePath.resolve(Paths.get("src", "main", "cpp", "a.c")),
@@ -91,7 +91,7 @@ public class GlobTest {
         temporaryFolder.newFolder("src", "main", "java");
         temporaryFolder.newFolder("src", "test", "java");
 
-        final Set<Path> matched = glob.scan(basePath);
+        final Collection<Path> matched = glob.scan(basePath);
         assertThat(matched).containsOnly(basePath.resolve(Paths.get("src", "main")),
             basePath.resolve(Paths.get("src", "main", "java")),
             basePath.resolve(Paths.get("src", "test", "java")));
@@ -111,7 +111,7 @@ public class GlobTest {
         temporaryFolder.newFile("tree/test/b.txt");
         temporaryFolder.newFile("c.txt");
 
-        final Set<Path> matchedAny = glob.scan(basePath);
+        final Collection<Path> matchedAny = glob.scan(basePath);
         assertThat(matchedAny).containsOnly(
             basePath.resolve(Paths.get("tree", "a.txt")),
             basePath.resolve(Paths.get("tree", "test", "b.txt")),
@@ -129,7 +129,7 @@ public class GlobTest {
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFile("tree/a.txt");
 
-        final Set<Path> matches = glob.scan(basePath);
+        final Collection<Path> matches = glob.scan(basePath);
         assertThat(matches).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
         assertThat(matches).are(new MatchCondition(glob));
 
@@ -142,7 +142,7 @@ public class GlobTest {
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFile("tree/a.txt");
 
-        final Set<Path> matchedFiles = glob.scan(basePath);
+        final Collection<Path> matchedFiles = glob.scan(basePath);
         assertThat(matchedFiles).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
         assertThat(matchedFiles).are(new MatchCondition(glob));
 
@@ -156,7 +156,7 @@ public class GlobTest {
         temporaryFolder.newFile("tree/a.txt");
         temporaryFolder.newFile("a.txt");
 
-        final Set<Path> matchedFiles = glob.scan(basePath);
+        final Collection<Path> matchedFiles = glob.scan(basePath);
         assertThat(matchedFiles).containsOnly(
             basePath,
             basePath.resolve("tree"),
@@ -175,7 +175,7 @@ public class GlobTest {
         temporaryFolder.newFile("tree/a.txt");
         temporaryFolder.newFile("a.txt");
 
-        final Set<Path> matchedFiles = glob.scan(basePath, TargetType.FILE);
+        final Collection<Path> matchedFiles = glob.scan(basePath, TargetType.FILE);
         assertThat(matchedFiles).containsOnly(
             basePath.resolve("a.txt"),
             basePath.resolve(Paths.get("tree", "a.txt")));
@@ -187,7 +187,7 @@ public class GlobTest {
 
         final Glob glob = Glob.compile("**");
 
-        final Set<Path> matches = glob.scan(basePath.resolve("abc"));
+        final Collection<Path> matches = glob.scan(basePath.resolve("abc"));
         assertThat(matches).isEmpty();
     }
 
@@ -229,7 +229,39 @@ public class GlobTest {
         temporaryFolder.newFile("aa.jar");
         temporaryFolder.newFile("ab.jar");
 
-        Set<Path> paths = glob.scan(basePath, Glob.compile("ab.jar").negate());
+        Collection<Path> paths = glob.scan(basePath, Glob.compile("ab.jar").negate());
         assertThat(paths).containsExactly(Paths.get("aa.jar"));
+    }
+
+    @Test
+    public void testPathsOrder() throws Exception {
+
+        for (char c = 'a'; c <= 'z'; c++) {
+            temporaryFolder.newFile(c + ".jar");
+        }
+
+        Collection<Path> paths = Glob.compile("o.jar", "r.jar", "d.jar", "*.jar").scan(basePath);
+        assertThat(paths).hasSize(26);
+        assertThat(paths).containsSequence(Paths.get("o.jar"), Paths.get("r.jar"), Paths.get("d.jar"));
+    }
+
+    @Test
+    public void testPathsOrderWithSubdirectories() throws Exception {
+
+        temporaryFolder.newFolder("a");
+        temporaryFolder.newFolder("b");
+
+        temporaryFolder.newFile("a/a.js");
+        temporaryFolder.newFile("a/a.css");
+        temporaryFolder.newFile("b/b.js");
+        temporaryFolder.newFile("b/b.css");
+
+        Collection<Path> paths = Glob.compile("**/*.js", "**/*.css").scan(basePath);
+        assertThat(paths).containsExactly(
+            Paths.get("a", "a.js"),
+            Paths.get("b", "b.js"),
+            Paths.get("a", "a.css"),
+            Paths.get("b", "b.css"));
+
     }
 }
