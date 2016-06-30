@@ -18,10 +18,14 @@ class TreeScanner implements Scanner {
             return;
         }
         try (final Stream<Path> stream = Files.walk(context.getPath())) {
-            stream.forEach(context::scanNext);
+            stream.forEach(p -> callScan(context, p));
         } catch (IOException e) {
             throw new GlobException(e);
         }
+    }
+
+    void callScan(ScanContext context, Path p) {
+        context.scanNext(p);
     }
 
     @Override

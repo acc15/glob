@@ -15,39 +15,14 @@ import java.util.stream.Collectors;
  */
 public class Glob implements Predicate<Path> {
 
-    private final Node root = new Node(null);
-    private int sequence = 0;
+    private final Node root;
 
-    public Glob() {
-    }
-
-    public Glob(Scanner... scanners) {
-        addSequence(Arrays.asList(scanners));
-    }
-
-    public Glob(List<Scanner> scanners) {
-        addSequence(scanners);
-    }
-
-    public Glob(Set<List<Scanner>> scannerSet) {
-        scannerSet.forEach(this::addSequence);
-    }
-
-    public void addSequence(List<Scanner> scanners) {
-        Node node = root;
-        for (Scanner scanner : scanners) {
-            node = node.addNext(scanner);
-        }
-        node.addNext(Scanners.match(sequence));
-        ++sequence;
+    private Glob(Node node) {
+        this.root = node;
     }
 
     public boolean test(final Path path) {
         return new MatchContext(path, root, 0).matchNext(0);
-    }
-
-    public boolean test(final Path path, final Predicate<Path> predicate) {
-        return predicate.test(path) && test(path);
     }
 
     public Set<Path> scan(final Path dir) throws IOException {
@@ -65,6 +40,16 @@ public class Glob implements Predicate<Path> {
         return toPathSet(matches);
     }
 
+
+    private static void addSequence(Node root, List<Scanner> scanners, int sequence) {
+        Node node = root;
+        for (Scanner scanner : scanners) {
+            node = node.addNext(scanner);
+        }
+        node.addNext(Scanners.match(sequence));
+    }
+
+
     static List<Scanner> parseSequence(String expression) {
         final List<Scanner> scanners = new ArrayList<>();
         final String[] segments = expression.split("/");
@@ -81,19 +66,31 @@ public class Glob implements Predicate<Path> {
     }
 
     public static Glob compile(Iterable<String> expressions) {
-        final Glob glob = new Glob();
+        final Node root = new Node(null);
+
+        int seq = 0;
         for (String e: expressions) {
-            glob.addSequence(parseSequence(e));
+            addSequence(root, parseSequence(e), seq);
+            ++seq;
         }
-        return glob;
+        return new Glob(root);
     }
 
     public static Glob compile(String expression, String... others) {
-        final Glob glob = new Glob(parseSequence(expression));
+        final Node root = new Node(null);
+
+        addSequence(root, parseSequence(expression), 0);
+
+        int seq = 1;
         for (String e: others) {
-            glob.addSequence(parseSequence(e));
+            addSequence(root, parseSequence(e), seq);
+            ++seq;
         }
-        return glob;
+        return new Glob(root);
+    }
+
+    public static Glob empty() {
+        return new Glob(new Node(null));
     }
 
     static class Node {
@@ -116,6 +113,8 @@ public class Glob implements Predicate<Path> {
         }
 
     }
+
+
 
     private static class RelativizingPathCollector implements PathCollector {
         private final PathCollector next;

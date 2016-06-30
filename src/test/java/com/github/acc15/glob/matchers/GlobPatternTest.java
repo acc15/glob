@@ -2,7 +2,7 @@ package com.github.acc15.glob.matchers;
 
 import com.github.acc15.glob.common.CharIterator;
 import org.assertj.core.api.Assertions;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;

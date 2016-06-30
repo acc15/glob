@@ -1,5 +1,7 @@
 package com.github.acc15.glob;
 
+import com.github.acc15.glob.scanners.Glob;
+
 import java.nio.file.Path;
 import java.util.Set;
 
@@ -8,8 +10,8 @@ import java.util.Set;
  */
 public class DirectoryScanner {
 
-    private Set<String> includes;
-    private Set<String> excludes;
+    private Glob includes = Glob.compile("**/*");
+    private Glob excludes = Glob.empty();
     private Path dir;
 
 

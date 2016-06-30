@@ -37,7 +37,7 @@ public class GlobTest {
 
         @Override
         public boolean matches(Path value) {
-            return glob.test(basePath.relativize(value));
+            return glob.test(value);
         }
     }
 
@@ -75,9 +75,9 @@ public class GlobTest {
         final Collection<Path> matches = glob.scan(basePath);
 
         assertThat(matches).containsOnly(
-            basePath.resolve(Paths.get("src", "main", "cpp", "a.c")),
-            basePath.resolve(Paths.get("src", "main", "cpp", "a.cpp")),
-            basePath.resolve(Paths.get("src", "main", "cpp", "dir1", "b.c")));
+            Paths.get("src", "main", "cpp", "a.c"),
+            Paths.get("src", "main", "cpp", "a.cpp"),
+            Paths.get("src", "main", "cpp", "dir1", "b.c"));
 
         assertThat(matches).are(new MatchCondition(glob));
 
@@ -92,9 +92,10 @@ public class GlobTest {
         temporaryFolder.newFolder("src", "test", "java");
 
         final Collection<Path> matched = glob.scan(basePath);
-        assertThat(matched).containsOnly(basePath.resolve(Paths.get("src", "main")),
-            basePath.resolve(Paths.get("src", "main", "java")),
-            basePath.resolve(Paths.get("src", "test", "java")));
+        assertThat(matched).containsOnly(
+            Paths.get("src", "main"),
+            Paths.get("src", "main", "java"),
+            Paths.get("src", "test", "java"));
 
         assertThat(matched).are(new MatchCondition(glob));
 
@@ -113,10 +114,10 @@ public class GlobTest {
 
         final Collection<Path> matchedAny = glob.scan(basePath);
         assertThat(matchedAny).containsOnly(
-            basePath.resolve(Paths.get("tree", "a.txt")),
-            basePath.resolve(Paths.get("tree", "test", "b.txt")),
-            basePath.resolve(Paths.get("tree")),
-            basePath.resolve(Paths.get("tree", "test")));
+            Paths.get("tree", "a.txt"),
+            Paths.get("tree", "test", "b.txt"),
+            Paths.get("tree"),
+            Paths.get("tree", "test"));
 
         assertThat(matchedAny).are(new MatchCondition(glob));
 
@@ -130,7 +131,7 @@ public class GlobTest {
         temporaryFolder.newFile("tree/a.txt");
 
         final Collection<Path> matches = glob.scan(basePath);
-        assertThat(matches).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
+        assertThat(matches).containsOnly(Paths.get("tree", "a.txt"));
         assertThat(matches).are(new MatchCondition(glob));
 
     }
@@ -143,7 +144,7 @@ public class GlobTest {
         temporaryFolder.newFile("tree/a.txt");
 
         final Collection<Path> matchedFiles = glob.scan(basePath);
-        assertThat(matchedFiles).containsOnly(basePath.resolve(Paths.get("tree", "a.txt")));
+        assertThat(matchedFiles).containsOnly(Paths.get("tree", "a.txt"));
         assertThat(matchedFiles).are(new MatchCondition(glob));
 
     }
@@ -158,10 +159,10 @@ public class GlobTest {
 
         final Collection<Path> matchedFiles = glob.scan(basePath);
         assertThat(matchedFiles).containsOnly(
-            basePath,
-            basePath.resolve("tree"),
-            basePath.resolve("a.txt"),
-            basePath.resolve(Paths.get("tree", "a.txt")));
+            Paths.get(""),
+            Paths.get("tree"),
+            Paths.get("a.txt"),
+            Paths.get("tree", "a.txt"));
 
         assertThat(matchedFiles).are(new MatchCondition(glob));
 
@@ -170,15 +171,14 @@ public class GlobTest {
     @Test
     public void testScanWithTargetTypeShouldReturnOnlyFiles() throws Exception {
 
-        final Glob glob = Glob.compile("**");
         temporaryFolder.newFolder("tree");
         temporaryFolder.newFile("tree/a.txt");
         temporaryFolder.newFile("a.txt");
 
-        final Collection<Path> matchedFiles = glob.scan(basePath, TargetType.FILE);
+        final Collection<Path> matchedFiles = Glob.compile("**").scan(basePath, TargetType.FILE);
         assertThat(matchedFiles).containsOnly(
-            basePath.resolve("a.txt"),
-            basePath.resolve(Paths.get("tree", "a.txt")));
+            Paths.get("a.txt"),
+            Paths.get("tree", "a.txt"));
 
     }
 
@@ -263,5 +263,10 @@ public class GlobTest {
             Paths.get("a", "a.css"),
             Paths.get("b", "b.css"));
 
+    }
+
+    @Test
+    public void emptyGlob() throws Exception {
+        assertThat(Glob.empty().test(Paths.get("a.txt"))).isFalse();
     }
 }
